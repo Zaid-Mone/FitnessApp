@@ -1,0 +1,66 @@
+﻿@model FitnessApp.Models.Invoice
+
+@{
+    ViewData["Title"] = "Edit";
+}
+
+<h3>Edit Invoice</h3>
+<hr />
+<div class="row">
+    <div class="col-md-12">
+        <form asp-action="Edit">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="Id" />
+            <input type="hidden" asp-for="MemberId" />
+            <input type="hidden" asp-for="SerialNumber" />
+            <div class="row">
+
+                <div class="form-group col-6">
+                    <label asp-for="Member.Person.Email" class="control-label"></label>
+                    <input asp-for="Member.Person.Email" class="form-control" disabled />
+                </div>
+
+                <div class="form-group col-6">
+                    <label asp-for="SerialNumber" class="control-label"></label>
+                    <input asp-for="SerialNumber" class="form-control" disabled />
+                </div>
+            </div>
+            <div class="row">
+                <div class="form-group col-6">
+                    <label asp-for="TotalAmount" class="control-label"></label>
+                    <input asp-for="TotalAmount" class="form-control" disabled />
+                    <span asp-validation-for="TotalAmount" class="text-danger"></span>
+                </div>
+                <div class="form-group col-6">
+                    <label asp-for="RemainingValue" class="control-label"></label>
+                    <input asp-for="RemainingValue" class="form-control" disabled />
+                    <span asp-validation-for="RemainingValue" class="text-danger"></span>
+                </div>
+
+            </div>
+            <div class="row">
+
+                <div class="form-group col-6">
+                    <label asp-for="Userpays" class="control-label"></label>
+                    <input asp-for="Userpays" class="form-control" />
+                    <span asp-validation-for="Userpays" class="text-danger"></span>
+                </div>
+
+
+                <div class="form-group col-6">
+                    <label asp-for="UserPayDate" class="control-label"></label>
+                    <input asp-for="UserPayDate" class="form-control" />
+                    <span asp-validation-for="UserPayDate" class="text-danger"></span>
+                </div>
+            </div>
+
+
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-primary" />
+                <a asp-action="Index">Back to List</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+

@@ -1,0 +1,67 @@
+﻿@using FitnessApp.DTOs
+@model InsertNutrationDTO
+
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+<h4>Create Nutrition</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+            <div class="form-group">
+                <label asp-for="MemberId" class="control-label"></label>
+                <select asp-for="MemberId" class="form-control" id="memberSelector">
+                    <option disabled selected> Select Member</option>
+                </select>
+                <span asp-validation-for="MemberId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="MealName" class="control-label"></label>
+                <input asp-for="MealName" class="form-control" />
+                <span asp-validation-for="MealName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="DateOfNutrition" class="control-label"></label>
+                <input asp-for="DateOfNutrition" class="form-control" />
+                <span asp-validation-for="DateOfNutrition" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+                <a asp-action="Index">Back to List</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script>
+        axios.get('/API/GetTrainerMembers')
+        .then(function (response) {
+            // handle success
+            const trainer = document.getElementById('memberSelector');
+            for (var item of response.data) { // Use "of" instead of "in" for iterating over an array
+                var option = document.createElement('option');
+                option.value = item.member.id;
+                option.text = item.member.person.email;
+                console.log(option.value);
+                console.log(option.text);
+                trainer.add(option);
+            }
+
+            console.log(response);
+        })
+        .catch(function (error) {
+            // handle error
+            console.log(error);
+        })
+    </script>
+}

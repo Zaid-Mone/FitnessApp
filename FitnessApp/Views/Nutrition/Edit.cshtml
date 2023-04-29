@@ -1,0 +1,40 @@
+﻿@model FitnessApp.Models.Nutrition
+
+@{
+    ViewData["Title"] = "Edit";
+    var memberId = (string)ViewBag.memberId;
+}
+
+
+
+<h3>Edit Nutrition</h3>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Edit">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="Id" />
+            <input type="hidden" asp-for="NameOfDay" />
+            <input type="hidden" name="MemberId" value="@memberId" />
+            <div class="form-group">
+                <label asp-for="MealName" class="control-label"></label>
+                <input asp-for="MealName" class="form-control" />
+                <span asp-validation-for="MealName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="DateOfNutrition" class="control-label"></label>
+                <input asp-for="DateOfNutrition" class="form-control" />
+                <span asp-validation-for="DateOfNutrition" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-primary" />
+                <a asp-action="Index" class="btn btn-secondary">Back to List</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

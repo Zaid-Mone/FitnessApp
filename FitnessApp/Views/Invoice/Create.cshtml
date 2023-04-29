@@ -1,0 +1,86 @@
+﻿@model FitnessApp.Models.Invoice
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+
+
+
+
+<h3>Create Invoice</h3>
+<hr />
+<div class="row">
+    <div class="col-md-12">
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input name="TotalAmount" hidden value="" id="totalAmountInput"/>
+            <div class="form-group">
+                <label asp-for="MemberId" class="control-label"></label>
+                <select asp-for="MemberId" class="form-control" id="memberSelector">
+                    <option disabled selected>Select Member</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label asp-for="TotalAmount" class="control-label"></label>
+                <input asp-for="TotalAmount" class="form-control" onchange="myFunction()" disabled/>
+                <span asp-validation-for="TotalAmount" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Userpays" class="control-label"></label>
+                <input asp-for="Userpays" class="form-control" />
+                <span asp-validation-for="Userpays" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+                <a asp-action="Index" class="btn btn-secondary">Back to List</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <!-- To get ALl Members to Pays-->
+    <script>
+        axios.get('/API/GetAllMembersForInvoice')
+            .then(function (response) {
+                // handle success
+                const member = document.getElementById('memberSelector');
+                for (var item of response.data) {
+                    var option = document.createElement('option');
+                    option.value = item.id;
+                    option.text = item.person.email;
+                    member.add(option);
+                }
+                console.log(response);
+            })
+            .catch(function (error) {
+                // handle error
+                console.log(error);
+            })
+    </script>
+    <!-- To get change user Total price-->
+    <script>
+        function myFunction() {
+            debugger;
+            var optionValue = document.getElementById("memberSelector").value;
+            axios.get(`/API/GetMemberGymBundle?idUser=${optionValue}`)
+                .then(function (response) {
+                    console.log(response);
+                    $("TotalAmount").remove();
+                    $("#TotalAmount").val(response.data.totalAmount.toFixed(1) + "$");
+                    $("#totalAmountInput").val(response.data.totalAmount);
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+            //console.clear();
+        }
+
+        $("#memberSelector").change(function () {
+            myFunction();
+        });
+    </script>
+
+}

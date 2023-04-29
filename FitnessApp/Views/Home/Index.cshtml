@@ -1,0 +1,46 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
+<script>
+    axios.get('/API/GetListOfWeeklyDaysEnum')
+        .then(function (response) {
+
+            const data = response.data;
+
+            // Get a reference to the header row element
+            const headerRow = document.getElementById('header-row');
+
+            // Populate the header row with data from the AJAX call
+            for (var item of data) {
+                const th = document.createElement('th');
+                th.textContent = item;
+                headerRow.appendChild(th);
+            }
+
+
+         })
+        .catch(function (error) {
+            // handle error
+            console.log(error);
+        })
+</script>
+
+<div class="row">
+    <div class="col-12">
+
+        <!-- HTML table markup using Bootstrap styles -->
+        <table class="table table-bordered table-striped mt-5">
+            <thead>
+                <tr id="header-row">
+                    <!-- Header row will be populated by AJAX data -->
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Table body will be populated by AJAX data -->
+            </tbody>
+        </table>
+
+    </div>
+</div>
+
+

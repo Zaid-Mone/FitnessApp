@@ -1,0 +1,75 @@
+﻿@model IEnumerable<FitnessApp.Models.Exercise>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Index</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<div class="row">
+
+    <div class="col-12">
+
+        <table class="table table-striped table-bordered">
+            <thead>
+                <tr>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Title)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.ExerciseCount)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.ExerciseDuration)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Member.Person)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.DateOfExercise)
+                    </th>
+
+                    <th>
+                        @Html.DisplayNameFor(model => model.ExerciseTimeFormat)
+                    </th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Title)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.ExerciseCount)
+                        </td>
+                        <td>
+
+                            @Html.DisplayFor(modelItem => item.ExerciseDuration)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Member.Person.Email)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.DateOfExercise)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.ExerciseTimeFormat)
+                        </td>
+                        <td>
+                            <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                            <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                            <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+
+    </div>
+</div>

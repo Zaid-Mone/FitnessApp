@@ -1,0 +1,93 @@
+﻿@using FitnessApp.DTOs
+
+@model InsertExerciseDTO
+
+@{
+    ViewData["Title"] = "Create";
+
+}
+
+
+
+<h3>Create Exercise</h3>
+<hr />
+<div class="row">
+    <div class="col-md-12">
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="row">
+
+                <div class="form-group col-6">
+                    <label asp-for="MemberId" class="control-label"></label>
+                    <select asp-for="MemberId" class="form-control" id="memberSelector">
+                        <option disabled selected> Select Member</option>
+                    </select>
+                    <span asp-validation-for="MemberId" class="text-danger"></span>
+                </div>
+                <div class="form-group col-6">
+                    <label asp-for="Title" class="control-label"></label>
+                    <input asp-for="Title" class="form-control" />
+                    <span asp-validation-for="Title" class="text-danger"></span>
+                </div>
+
+            </div>
+
+            <div class="row">
+                <div class="form-group col-6">
+                    <label asp-for="ExerciseCount" class="control-label"></label>
+                    <input asp-for="ExerciseCount" class="form-control" />
+                    <span asp-validation-for="ExerciseCount" class="text-danger"></span>
+                </div>
+                <div class="form-group col-6">
+                    <label asp-for="DateOfExercise" class="control-label"></label>
+                    <input asp-for="DateOfExercise" class="form-control" />
+                    <span asp-validation-for="DateOfExercise" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="row">
+
+                <div class="form-group col-6">
+                    <label asp-for="ExerciseFrom" class="control-label"></label>
+                    <input asp-for="ExerciseFrom" class="form-control" />
+                    <span asp-validation-for="ExerciseFrom" class="text-danger"></span>
+                </div>
+                <div class="form-group col-6">
+                    <label asp-for="ExerciseTO" class="control-label"></label>
+                    <input asp-for="ExerciseTO" class="form-control" />
+                    <span asp-validation-for="ExerciseTO" class="text-danger"></span>
+                </div>
+            </div>
+
+
+            <div class="form-group mt-2">
+                <input type="submit" value="Create" class="btn btn-primary" />
+                <a asp-action="Index" class="btn btn-secondary">Back to List</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script>
+        axios.get('/API/GetTrainerMembers')
+        .then(function (response) {
+            // handle success
+            const trainer = document.getElementById('memberSelector');
+            for (var item of response.data) { // Use "of" instead of "in" for iterating over an array
+                var option = document.createElement('option');
+                option.value = item.member.id;
+                option.text = item.member.person.email;
+                trainer.add(option);
+            }
+
+            console.log(response);
+        })
+        .catch(function (error) {
+            // handle error
+            console.log(error);
+        })
+    </script>
+}
+
