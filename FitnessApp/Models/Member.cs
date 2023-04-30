@@ -19,6 +19,7 @@ namespace FitnessApp.Models
         public int Age { get; set; }
         public float Weight { get; set; }
         public float Height { get; set; }
+        [Display(Name = "Date Of Birth")]
         [DataType(DataType.Date)]
         public DateTime DateOfBirth { get; set; }
 

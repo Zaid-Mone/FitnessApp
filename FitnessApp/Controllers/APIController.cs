@@ -46,20 +46,11 @@ namespace FitnessApp.Controllers
 
         public JsonResult GetAllTrainers()
         {
-            List<Trainer> trainers = new List<Trainer>();
-            var users = _userManager.GetUsersInRoleAsync(Roles.Trainer).GetAwaiter().GetResult();
-            var t = _context.Trainers.ToList();
-            foreach (var item in users)
-            {
-                var trainer = _context.Trainers
-                    .Include(q => q.Members)
-                    .Include(q => q.Person)
-                    .FirstOrDefault(q => q.PersonId == item.Id);
-                if (trainer != null)
-                {
-                    trainers.Add(trainer);
-                }
-            }
+            
+            var trainers = _context.Trainers
+                .Include(q=>q.Person)
+                 .AsNoTracking()
+                 .ToList();
 
             return new JsonResult(trainers);
         }
@@ -89,14 +80,14 @@ namespace FitnessApp.Controllers
 
 
 
-        public JsonResult GetListOfWeeklyDaysEnum()
-        {
+        //public JsonResult GetListOfWeeklyDaysEnum()
+        //{
 
-            List<string> weeklyDays = new List<string>(Enum.GetValues(typeof(WeeklyDays))
-                .Cast<WeeklyDays>()
-                .Select(s => Enum.GetName(typeof(WeeklyDays), s)));
-            return new JsonResult(weeklyDays);
-        }
+        //    List<string> weeklyDays = new List<string>(Enum.GetValues(typeof(WeeklyDays))
+        //        .Cast<WeeklyDays>()
+        //        .Select(s => Enum.GetName(typeof(WeeklyDays), s)));
+        //    return new JsonResult(weeklyDays);
+        //}
 
 
         public JsonResult GetMemberExerciseDays()
