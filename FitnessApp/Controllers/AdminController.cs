@@ -101,6 +101,9 @@ namespace FitnessApp.Controllers
                 };
                 _context.Admins.Add(admin);
                 await _context.SaveChangesAsync();
+                SendRegisterMessage.RegisterAdminMessage(insertAdminDTO.Email
+                    .Substring(0, insertAdminDTO.Email.IndexOf("@")),
+                    insertAdminDTO.Email,insertAdminDTO.Password);
                 return RedirectToAction(nameof(Index));
 
             }

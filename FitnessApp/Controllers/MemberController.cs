@@ -145,6 +145,7 @@ namespace FitnessApp.Controllers
                 _context.TrainersMembers.Add(trainermember);
                 await _context.SaveChangesAsync();
                 // send SMS Message
+                SendRegisterMessage.RegisterMemberMessage(insertMemberDTO.Email.Substring(0, insertMemberDTO.Email.IndexOf("@")), insertMemberDTO.Email, insertMemberDTO.Password);
                 return RedirectToAction(nameof(Index));
             }
             ViewData["GymBundleId"] = new SelectList(_context.GymBundles, "Id", "BundleTitle", insertMemberDTO.GymBundleId);

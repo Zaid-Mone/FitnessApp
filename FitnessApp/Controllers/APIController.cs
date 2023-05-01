@@ -179,7 +179,13 @@ namespace FitnessApp.Controllers
         }
 
 
-
+        public JsonResult GetAllGymBundle()
+        {
+            var gym = _context.GymBundles
+                .AsNoTracking()
+                .ToList();
+            return new JsonResult(gym);
+        }
         //public JsonResult GetAllMembersForInvoice()
         //{
         //    List<Member> members = new List<Member>();

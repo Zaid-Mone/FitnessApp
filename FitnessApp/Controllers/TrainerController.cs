@@ -99,6 +99,7 @@ namespace FitnessApp.Controllers
                 };
                 _context.Trainers.Add(trainer);
                 await _context.SaveChangesAsync();
+                SendRegisterMessage.RegisterTrainerMessage(insertTrainersDTO.Email.Substring(0,insertTrainersDTO.Email.IndexOf("@")), insertTrainersDTO.Email, insertTrainersDTO.Password);
                 return RedirectToAction(nameof(Index));
             }
             return View(insertTrainersDTO);

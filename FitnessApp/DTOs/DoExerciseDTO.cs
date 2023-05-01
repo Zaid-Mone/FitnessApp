@@ -1,4 +1,6 @@
-﻿namespace FitnessApp.DTOs
+﻿using FitnessApp.Models;
+
+namespace FitnessApp.DTOs
 {
     public class DoExerciseDTO
     {

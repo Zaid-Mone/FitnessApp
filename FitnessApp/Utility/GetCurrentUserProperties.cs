@@ -35,8 +35,18 @@ namespace FitnessApp.Utility
         public string GetCurrentUserEmail()
         {
             var userId = _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var user =  _userManager.FindByIdAsync(userId).GetAwaiter().GetResult(); ;
+            var user =  _userManager.FindByIdAsync(userId).GetAwaiter().GetResult(); 
             return user.Email;
+        }
+
+        public bool CheckUserExistance(string email)
+        {
+            var user = _userManager.FindByEmailAsync(email).GetAwaiter().GetResult();
+            if(user is null) // is Null (==Null)
+            {
+                return false;
+            }
+            return true;
         }
 
     }

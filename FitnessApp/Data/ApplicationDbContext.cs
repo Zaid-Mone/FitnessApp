@@ -22,6 +22,7 @@ namespace FitnessApp.Data
         public DbSet<Invoice> Invoices { get; set; }
         public DbSet<TrainersMember> TrainersMembers { get; set; }
         public DbSet<GymBundle> GymBundles { get; set; }
+        public DbSet<RegistrationNotification> RegistrationNotifications { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
