@@ -7,16 +7,20 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using FitnessApp.Data;
 using FitnessApp.Models;
+using FitnessApp.Utility;
+using System.Security.Claims;
 
 namespace FitnessApp.Controllers
 {
     public class InvoiceController : Controller
     {
         private readonly ApplicationDbContext _context;
-
-        public InvoiceController(ApplicationDbContext context)
+        private readonly SendMemberInvoiceMessage _sendMemberInvoiceMessage;
+        public InvoiceController(ApplicationDbContext context, 
+            SendMemberInvoiceMessage sendMemberInvoiceMessage)
         {
             _context = context;
+            _sendMemberInvoiceMessage = sendMemberInvoiceMessage;
         }
 
         // GET: Invoice
@@ -71,7 +75,10 @@ namespace FitnessApp.Controllers
                 }
                 else if(invoice.Userpays > invoice.TotalAmount)
                 {
-                    ModelState.AddModelError("", "The User Pays is greater than the Ordered Value.");
+
+                    // Display Error Message if something went wrong.
+                    ViewBag.msg = false;
+                    ViewBag.balance = invoice.TotalAmount.ToString("C");
                     return View(invoice);
                 }
                 else
@@ -81,6 +88,8 @@ namespace FitnessApp.Controllers
                 }
                 _context.Add(invoice);
                 await _context.SaveChangesAsync();
+                // send message to the member
+                _sendMemberInvoiceMessage.SendInvoiceMessage(invoice.Id);
                 return RedirectToAction(nameof(Index));
             }
             return View(invoice);
@@ -88,7 +97,6 @@ namespace FitnessApp.Controllers
 
 
 
-        // Try To Remove the Edit because the Invoice is already sented to the user.
         // GET: Invoice/Edit/5
         public async Task<IActionResult> Edit(string id)
         {
@@ -174,6 +182,20 @@ namespace FitnessApp.Controllers
         private bool InvoiceExists(string id)
         {
             return _context.Invoices.Any(e => e.Id == id);
+        }
+
+
+
+
+        public ActionResult GetMemberInvoice()
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var invoice = _context.Invoices
+                .Include(q => q.Member)
+                .Include(q => q.Member.Person)
+                .Where(q => q.Member.PersonId == userId).ToList();
+
+            return View(invoice);
         }
     }
 }

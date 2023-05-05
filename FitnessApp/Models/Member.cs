@@ -27,6 +27,7 @@ namespace FitnessApp.Models
         [Display(Name = "Gym Bundle")]
         public string GymBundleId { get; set; }
         public GymBundle GymBundle { get; set; }
+
         public ICollection<TrainersMember> TrainersMembers { get; }
 
          
@@ -34,10 +35,12 @@ namespace FitnessApp.Models
         public string BMIStatus { get; set; }
         public bool IsMemberOverWeight { get; set; } = false;
 
+        public DateTime MembershipFrom { get; set; } // DateTime.Now
+        public DateTime MembershipTo { get; set; } // MembershipFrom.AddDays(=> get this form the gym bundle)
 
         //public string Country { get; set; } = "Jordan";   
         //public State State { get; set; }
-        //public string Address { get; set; } 
+        //public string Address { get; set; } = string.Empty;
     }
 
 }

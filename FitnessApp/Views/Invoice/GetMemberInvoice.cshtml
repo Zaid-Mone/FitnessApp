@@ -1,0 +1,74 @@
+﻿@model IEnumerable<FitnessApp.Models.Invoice>
+
+
+<div class="table-responsive">
+    <table class="table table-bordered" id="example" style="min-width: 840px">
+        <thead>
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.SerialNumber)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.TotalAmount)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Userpays)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.RemainingValue)
+                </th>
+                <th>
+                    Pay Date
+                </th>
+
+                <th>
+                    Membership Start Date
+                </th>
+                <th>
+                    Membership End Date
+                </th>
+                <th>
+                    Full Paid 
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+            <tr>
+                <td>
+                    #@Html.DisplayFor(modelItem => item.SerialNumber)
+                </td>
+                <td>
+                    @item.TotalAmount.ToString("C")
+                </td>
+                <td>
+                    @item.Userpays.ToString("C")
+                </td>
+                <td>
+                    @item.RemainingValue.ToString("C")
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.UserPayDate)
+                </td>
+                <td>
+                    @item.Member.MembershipFrom.ToString("d")
+                </td>
+                <td>
+                    @item.Member.MembershipTo.ToString("d")
+                </td>
+                
+                    @if (item.IsFullyPaid)
+                {
+            <td><i class="fa-solid fa-check text-success"></i></td>
+                }
+                else
+                {
+            <td><i class="fa-solid fa-xmark text-danger"></i></td>
+                }
+            
+            </tr>
+            }
+        </tbody>
+    </table>
+    </div>

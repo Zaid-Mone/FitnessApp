@@ -21,6 +21,23 @@
             console.log(error);
         })
 </script>
+
+@if (ViewBag.msg == false)
+{
+
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+    <script>
+        $(function () {
+        swal({
+        title: "warning",
+        text: "Something Went Wrong",
+        button: "Ok",
+        icon: "error",
+
+});        })
+    </script>
+
+}
 <div class="row">
     <div class="col-12">
         <form asp-action="Create" class="m-5">
@@ -120,5 +137,5 @@
 </div>
 
 @*@section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
-}*@
+        @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    }*@

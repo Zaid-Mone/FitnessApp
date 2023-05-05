@@ -118,16 +118,22 @@ namespace FitnessApp.Controllers
                     Height = insertMemberDTO.Height,
                     Weight = insertMemberDTO.Weight,
                     PersonId = person.Id
+                    
                 };
                 var memeberDTO = new WeightCalculateDTO
                 {
                     Weight = member.Weight,
-                   Height = member.Height,
-                   Age = member.Age
+                    Height = member.Height,
+                    Age = member.Age
                 };
                 member.BMIStatus = WeightState.SetWeightStatus(member.Height, member.Weight);
                 member.IsMemberOverWeight = CalculateWeight.IsOverweight(memeberDTO);
                 member.ExpectedWeight = CalculateWeight.GetPerfectWeight(memeberDTO);
+                // find Gym bundle with number of days.
+                var gym = _context.GymBundles.Where(q => q.Id == member.GymBundleId).FirstOrDefault();
+                var date = DateTime.Now;
+                member.MembershipFrom = date;
+                member.MembershipTo = member.MembershipFrom.AddDays((double)gym.NumberOfDays);
                 _context.Members.Add(member);
                 await _context.SaveChangesAsync();
 
@@ -149,6 +155,7 @@ namespace FitnessApp.Controllers
                 return RedirectToAction(nameof(Index));
             }
             ViewData["GymBundleId"] = new SelectList(_context.GymBundles, "Id", "BundleTitle", insertMemberDTO.GymBundleId);
+            ViewBag.msg = false;
             return View(insertMemberDTO);
         }
 

@@ -28,7 +28,8 @@ namespace FitnessApp.Utility
                 // and your password :{password}"
 
                 MESSAGE_TEXT = $"Dear Member {firstname} Welocme to Fitness Training your username:" +
-                        $"{username } and your password :{password}";
+                        $" {username} and your password : {password} ";
+
                 var configuration = new Configuration()
                 {
                     BasePath = BASE_URL,
@@ -71,7 +72,7 @@ namespace FitnessApp.Utility
                 // message ="Dear Admin {username} Welocme to Fitness Training your username:{Username }
                 // and your password :{password}"
                  MESSAGE_TEXT = $"Dear Admin {firstname} Welocme to Fitness Training your username:" +
-                    $"{username }and your password :{password}";
+                    $"{username} and your password :{password}";
                 var configuration = new Configuration()
                 {
                     BasePath = BASE_URL,
@@ -114,7 +115,7 @@ namespace FitnessApp.Utility
                 // message ="Dear Trainer {username} Welocme to Fitness Training your username:{Username }
                 // and your password :{password}"
                 MESSAGE_TEXT = $"Dear Trainer {firstname} Welocme to Fitness Training your username:" +
-                    $"{username }and your password :{password}";
+                    $"{username} and your password :{password}";
                 var configuration = new Configuration()
                 {
                     BasePath = BASE_URL,

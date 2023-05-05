@@ -36,7 +36,7 @@
                 <li>
                     <a asp-controller="GymBundle" asp-action="Index" aria-expanded="false">
                         <i class="icon icon-world-2"></i>
-                        <span class="nav-text">Gym Bundle</span>
+                        <span class="nav-text">Gym Bundles</span>
                     </a>
                 </li>
 
@@ -44,6 +44,13 @@
                     <a asp-controller="RegistrationNotification" asp-action="Index" aria-expanded="false">
                         <i class="icon icon-world-2"></i>
                         <span class="nav-text">Registration Requests</span>
+                    </a>
+                </li>
+
+                <li>
+                    <a asp-controller="Invoice" asp-action="Index" aria-expanded="false">
+                        <i class="icon icon-world-2"></i>
+                        <span class="nav-text">Invoices</span>
                     </a>
                 </li>
             </ul>
@@ -87,7 +94,26 @@ else
                         <span class="nav-text">Dashboard</span>
                     </a>
                 </li>
+                <li>
+                    <a asp-controller="Profile" asp-action="MyExercises" aria-expanded="false">
+                        <i class="icon icon-world-2"></i>
+                        <span class="nav-text">My Exercises</span>
+                    </a>
+                </li>
 
+                <li>
+                    <a asp-controller="Profile" asp-action="MyNutrations" aria-expanded="false">
+                        <i class="icon icon-world-2"></i>
+                        <span class="nav-text">My Nutriation</span>
+                    </a>
+                </li>
+
+                <li>
+                    <a asp-controller="Invoice" asp-action="GetMemberInvoice" aria-expanded="false">
+                        <i class="icon icon-world-2"></i>
+                        <span class="nav-text">My Invoices</span>
+                    </a>
+                </li>
             </ul>
         </div>
     </div>

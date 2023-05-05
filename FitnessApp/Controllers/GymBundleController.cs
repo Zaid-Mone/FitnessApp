@@ -16,7 +16,6 @@ namespace FitnessApp.Controllers
     public class GymBundleController : Controller
     {
         private readonly ApplicationDbContext _context;
-
         public GymBundleController(ApplicationDbContext context)
         {
             _context = context;
@@ -60,6 +59,8 @@ namespace FitnessApp.Controllers
             if (ModelState.IsValid)
             {
                 gymBundle.Id = Guid.NewGuid().ToString();
+                // this line is if BundleTitle = 1 Months this mean NumberOfDays = 30 Days and so on . 
+                gymBundle.NumberOfDays = CalculateDays.SetNumberOfDays(gymBundle.BundleTitle);
                 _context.Add(gymBundle);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
@@ -86,7 +87,7 @@ namespace FitnessApp.Controllers
         // POST: GymBundle/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(string id, [Bind("Id,BundleTitle,Price")] GymBundle gymBundle)
+        public async Task<IActionResult> Edit(string id,GymBundle gymBundle)
         {
             if (id != gymBundle.Id)
             {
@@ -97,6 +98,7 @@ namespace FitnessApp.Controllers
             {
                 try
                 {
+                    gymBundle.NumberOfDays = CalculateDays.SetNumberOfDays(gymBundle.BundleTitle);
                     _context.Update(gymBundle);
                     await _context.SaveChangesAsync();
                 }

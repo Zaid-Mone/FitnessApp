@@ -45,6 +45,7 @@ namespace FitnessApp
             services.AddControllersWithViews();
             services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.AddScoped<GetCurrentUserProperties>();
+            services.AddScoped<SendMemberInvoiceMessage>();
             services.AddRazorPages();
         }
 

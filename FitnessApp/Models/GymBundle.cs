@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.ComponentModel.DataAnnotations;
 
 namespace FitnessApp.Models
 {
@@ -8,6 +9,7 @@ namespace FitnessApp.Models
         public string Id { get; set; }
         public string BundleTitle { get; set; }
         public decimal Price { get; set; }
-    }
+        public int? NumberOfDays { get; set; } // ? mean it can be null 
 
+    }
 }

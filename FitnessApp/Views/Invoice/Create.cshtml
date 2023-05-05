@@ -6,15 +6,13 @@
 
 
 
-
-
 <h3>Create Invoice</h3>
 <hr />
 <div class="row">
     <div class="col-md-12">
         <form asp-action="Create">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input name="TotalAmount" hidden value="" id="totalAmountInput"/>
+            <input name="TotalAmount" hidden value="" id="totalAmountInput" />
             <div class="form-group">
                 <label asp-for="MemberId" class="control-label"></label>
                 <select asp-for="MemberId" class="form-control" id="memberSelector">
@@ -23,7 +21,7 @@
             </div>
             <div class="form-group">
                 <label asp-for="TotalAmount" class="control-label"></label>
-                <input asp-for="TotalAmount" class="form-control" onchange="myFunction()" disabled/>
+                <input asp-for="TotalAmount" class="form-control" onchange="myFunction()" disabled />
                 <span asp-validation-for="TotalAmount" class="text-danger"></span>
             </div>
             <div class="form-group">
@@ -82,5 +80,20 @@
             myFunction();
         });
     </script>
+    @if (ViewBag.msg == false)
+    {
 
+        <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+        <script>
+        $(function () {
+        swal({
+        title: "warning",
+        text: "The Total Amount of Bill is: @ViewBag.balance",
+        button: "Ok",
+        icon: "error",
+
+});        })
+        </script>
+
+    }
 }
