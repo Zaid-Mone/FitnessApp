@@ -166,15 +166,28 @@ namespace FitnessApp.Controllers
 
         public JsonResult GetMemberGymBundle(string idUser)
         {
+            var invoice = _context.Invoices
+                .Where(q => q.MemberId == idUser)
+                .FirstOrDefault();
+
+            var remaining = (invoice is null) ? 0 : invoice.RemainingValue;
+
             var userBundle = _context.Members
                 .Include(q => q.GymBundle)
                 .Include(q => q.Person)
                 .Where(q => q.Id == idUser)
-                .Select(q=> new MemberInvoiceGet {  
+                .Select(q => new MemberInvoiceGet
+                {
                     MemberId = q.Id,
-                    TotalAmount = q.GymBundle.Price
+                    TotalAmount = q.GymBundle.Price,
+                    RemainingValue= remaining
                 })
                .FirstOrDefault();
+
+
+
+
+
             return new JsonResult(userBundle);
         }
 

@@ -27,23 +27,6 @@ namespace FitnessApp.Controllers
             return View(await _context.GymBundles.ToListAsync());
         }
 
-        // GET: GymBundle/Details/5
-        public async Task<IActionResult> Details(string id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var gymBundle = await _context.GymBundles
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (gymBundle == null)
-            {
-                return NotFound();
-            }
-
-            return View(gymBundle);
-        }
 
         // GET: GymBundle/Create
         public IActionResult Create()
@@ -58,6 +41,12 @@ namespace FitnessApp.Controllers
         {
             if (ModelState.IsValid)
             {
+                var check = _context.GymBundles.Where(q => q.BundleTitle == gymBundle.BundleTitle).Any();
+                if (check)
+                {
+                    ViewBag.msg = false;
+                    return View(gymBundle);
+                }
                 gymBundle.Id = Guid.NewGuid().ToString();
                 // this line is if BundleTitle = 1 Months this mean NumberOfDays = 30 Days and so on . 
                 gymBundle.NumberOfDays = CalculateDays.SetNumberOfDays(gymBundle.BundleTitle);

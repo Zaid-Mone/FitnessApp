@@ -25,9 +25,4 @@ namespace FitnessApp.DTOs
         //public decimal GymBundlePrice { get; set; }
 
     }
-    public class MemberInvoiceGet
-    {
-        public decimal TotalAmount { get; set; }
-        public string MemberId { get; set; }
-    }
 }

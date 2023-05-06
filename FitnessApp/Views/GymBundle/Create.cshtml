@@ -24,7 +24,7 @@
             </div>
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />
-                <a asp-action="Index">Back to List</a>
+                <a asp-action="Index" class="btn btn-secondary">Back to List</a>
             </div>
         </form>
     </div>
@@ -34,4 +34,23 @@
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+
+    @if (ViewBag.msg == false)
+    {
+
+        <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+        <script>
+        $(function () {
+        swal({
+        title: "Warning",
+        text: "Sorry This Bundle is Exist.",
+        button: "Ok",
+        icon: "error",
+
+});        })
+        </script>
+
+    }
+
+
 }

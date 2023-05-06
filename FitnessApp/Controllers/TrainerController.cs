@@ -81,17 +81,24 @@ namespace FitnessApp.Controllers
                     Role = Roles.Trainer,
                     UserName = insertTrainersDTO.Email,
                 };
+                // add image to user
                 UploadImage(person);
+                // check if the user exist
                 var check = await _userManager.FindByEmailAsync(insertTrainersDTO.Email);
                 if (check != null)
                 {
                     ModelState.AddModelError("", "Email is already used");
                     return View(insertTrainersDTO);
                 }
+                // add to data to Users object and Users Table
                 var result = await _userManager.CreateAsync(person, insertTrainersDTO.Password);
-                var role = await _userManager.AddToRoleAsync(person, Roles.Trainer);
+                if(result.Succeeded)
+                {
+                    // add role to the user
+                    var role = await _userManager.AddToRoleAsync(person, Roles.Trainer);
+                }
 
-                //
+                // add to data to trainer object and Trainer Table
                 var trainer = new Trainer()
                 {
                     Id = Guid.NewGuid().ToString(),

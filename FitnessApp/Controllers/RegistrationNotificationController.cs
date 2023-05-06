@@ -78,6 +78,7 @@ namespace FitnessApp.Controllers
                 
                 _context.Add(registrationNotification);
                 await _context.SaveChangesAsync();
+                SendToBecomeAMemberMessage.BecomeAMemberMessage();
                 return RedirectToAction(nameof(Index),"Home");
             }
             return View(registrationNotification);

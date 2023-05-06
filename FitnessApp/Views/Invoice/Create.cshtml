@@ -25,6 +25,11 @@
                 <span asp-validation-for="TotalAmount" class="text-danger"></span>
             </div>
             <div class="form-group">
+                <label asp-for="RemainingValue" class="control-label"></label>
+                <input asp-for="RemainingValue" class="form-control" disabled id="remainingInput" />
+                <span asp-validation-for="RemainingValue" class="text-danger"></span>
+            </div>
+            <div class="form-group">
                 <label asp-for="Userpays" class="control-label"></label>
                 <input asp-for="Userpays" class="form-control" />
                 <span asp-validation-for="Userpays" class="text-danger"></span>
@@ -51,7 +56,6 @@
                     option.text = item.person.email;
                     member.add(option);
                 }
-                console.log(response);
             })
             .catch(function (error) {
                 // handle error
@@ -67,8 +71,10 @@
                 .then(function (response) {
                     console.log(response);
                     $("TotalAmount").remove();
-                    $("#TotalAmount").val(response.data.totalAmount.toFixed(1) + "$");
+                    $("remainingInput").remove();
+                    $("#TotalAmount").val("$"+response.data.totalAmount.toFixed(1));
                     $("#totalAmountInput").val(response.data.totalAmount);
+                    $("#remainingInput").val("$" + response.data.remainingValue.toFixed(1))
                 })
                 .catch(function (error) {
                     console.log(error);
