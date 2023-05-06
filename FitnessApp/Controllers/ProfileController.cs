@@ -14,9 +14,9 @@ using System.Threading.Tasks;
 
 namespace FitnessApp.Controllers
 {
+    [Authorize]
     public class ProfileController : Controller
     {
-
         private readonly ApplicationDbContext _context;
         private readonly UserManager<Person> _userManager;
         private readonly GetCurrentUserProperties _getCurrentUserProperties;

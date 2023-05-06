@@ -9,9 +9,11 @@ using FitnessApp.Data;
 using FitnessApp.Models;
 using FitnessApp.Utility;
 using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
 
 namespace FitnessApp.Controllers
 {
+    [Authorize(Roles =Roles.Admin)]
     public class InvoiceController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -68,6 +70,13 @@ namespace FitnessApp.Controllers
                 invoice.Id = Guid.NewGuid().ToString();
                 invoice.UserPayDate = DateTime.Now;
                 invoice.SerialNumber = Math.Abs(Guid.NewGuid().GetHashCode()).ToString().Substring(0, 5);
+                // if the user have paid before and have remaing amount and paid more than it .
+                if(PayState(invoice) > 0 && invoice.Userpays > PayState(invoice))
+                {
+                    ViewBag.msg = false;
+                    ViewBag.balance = PayState(invoice).ToString("C");
+                    return View(invoice);
+                }
                 if (invoice.Userpays == invoice.TotalAmount)
                 {
                     invoice.RemainingValue = 0;
@@ -92,7 +101,26 @@ namespace FitnessApp.Controllers
                 _sendMemberInvoiceMessage.SendInvoiceMessage(invoice.Id);
                 return RedirectToAction(nameof(Index));
             }
+            ViewBag.balance = invoice.TotalAmount.ToString("C");
             return View(invoice);
+        }
+
+        public decimal PayState(Invoice model)
+        {
+            var reaming = new List<decimal>();
+            var invoices = _context.Invoices
+                .Include(q => q.Member)
+                .Include(q => q.Member.Person)
+                .Where(q => q.MemberId == model.MemberId)
+                .ToList();
+            foreach (var item in invoices)
+            {
+                if(item.RemainingValue > 0)
+                {
+                    reaming.Add(item.RemainingValue);
+                }
+            }
+            return reaming.Sum();
         }
 
 

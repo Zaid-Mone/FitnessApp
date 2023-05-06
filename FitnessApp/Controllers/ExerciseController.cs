@@ -11,9 +11,11 @@ using Microsoft.AspNetCore.Identity;
 using FitnessApp.DTOs;
 using System.Globalization;
 using FitnessApp.Utility;
+using Microsoft.AspNetCore.Authorization;
 
 namespace FitnessApp.Controllers
 {
+    [Authorize]
     public class ExerciseController : Controller
     {
         private readonly ApplicationDbContext _context;
