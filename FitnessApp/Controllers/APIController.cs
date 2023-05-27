@@ -109,8 +109,7 @@ namespace FitnessApp.Controllers
                   ExerciseTime = q.ExerciseTimeFormat,
                   ExerciseTitle = q.Title
              })
-             .ToList();
-                        
+             .ToList();        
             }
             return new JsonResult(exercise);
         }

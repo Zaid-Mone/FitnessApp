@@ -48,6 +48,9 @@ namespace FitnessApp.Models
         [Display(Name = "Trainer")]
         public string TrainerId { get; set; }
         public Trainer Trainer { get; set; }
+        [Required]
+        [DataType(DataType.Date)]
+        public DateTime DateOfBirth { get; set; }     
 
         //public DateTime DateOfRegisteration { get; set; }
         //public string  Status { get; set; } // approved // deined

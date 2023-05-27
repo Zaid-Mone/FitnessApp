@@ -32,7 +32,8 @@ namespace FitnessApp.Controllers
 
         public IActionResult Index()
         {
-            
+            if (_context.Users.Count() == 0 && _context.UserRoles.Count() == 0)
+                Seeding();
             return View();
         }
 
@@ -48,43 +49,43 @@ namespace FitnessApp.Controllers
         }
 
 
-        //public void Seeding()
-        //{
-        //    AddRoles();
-        //    var person = new Person()
-        //    {
-        //        Email = "Admin@email.com",
-        //        Gender = Enums.Gender.Male,
-        //        RegisterDate = DateTime.Now,
-        //        UserName = "Admin@email.com",
-        //        Role = Roles.Admin,
-        //        PhoneNumber = "078781423",
-        //        EmailConfirmed = true,
-        //        PhoneNumberConfirmed = true,
-        //    };
-        //    var username = person.Email.Substring(0, person.Email.IndexOf("@"));
-        //    person.UserAvatar = $"https://ui-avatars.com/api/?name={username}";
-        //    _userManager.CreateAsync(person, "Admin1234*").GetAwaiter().GetResult();
-        //    _userManager.AddToRoleAsync(person, Roles.Admin).GetAwaiter().GetResult();
+        public void Seeding()
+        {
+            AddRoles();
+            var person = new Person()
+            {
+                Email = "Admin@email.com",
+                Gender = Enums.Gender.Male,
+                RegisterDate = DateTime.Now,
+                UserName = "Admin@email.com",
+                Role = Roles.Admin,
+                PhoneNumber = "078781423",
+                EmailConfirmed = true,
+                PhoneNumberConfirmed = true,
+            };
+            var username = person.Email.Substring(0, person.Email.IndexOf("@"));
+            person.UserAvatar = $"https://ui-avatars.com/api/?name={username}";
+            _userManager.CreateAsync(person, "Admin1234*").GetAwaiter().GetResult();
+            _userManager.AddToRoleAsync(person, Roles.Admin).GetAwaiter().GetResult();
 
-        //    var admin = new Admin()
-        //    {
-        //        Id = Guid.NewGuid().ToString(),
-        //        PersonId = person.Id
-        //    };
-        //    _context.Admins.Add(admin);
-        //    _context.SaveChanges();
-        //}
-        //public void AddRoles()
-        //{
-        //    if (!_roleManager.RoleExistsAsync(Roles.Admin).GetAwaiter().GetResult())
-        //    {
-        //        _roleManager.CreateAsync(new IdentityRole { Name = Roles.Admin }).GetAwaiter().GetResult();
-        //        _roleManager.CreateAsync(new IdentityRole { Name = Roles.Member }).GetAwaiter().GetResult();
-        //        _roleManager.CreateAsync(new IdentityRole { Name = Roles.Trainer }).GetAwaiter().GetResult();
+            var admin = new Admin()
+            {
+                Id = Guid.NewGuid().ToString(),
+                PersonId = person.Id
+            };
+            _context.Admins.Add(admin);
+            _context.SaveChanges();
+        }
+        public void AddRoles()
+        {
+            if (!_roleManager.RoleExistsAsync(Roles.Admin).GetAwaiter().GetResult())
+            {
+                _roleManager.CreateAsync(new IdentityRole { Name = Roles.Admin }).GetAwaiter().GetResult();
+                _roleManager.CreateAsync(new IdentityRole { Name = Roles.Member }).GetAwaiter().GetResult();
+                _roleManager.CreateAsync(new IdentityRole { Name = Roles.Trainer }).GetAwaiter().GetResult();
 
-        //    }
-        //}
+            }
+        }
 
     }
 }

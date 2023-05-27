@@ -5,10 +5,15 @@
 
 <h1>My Exercises</h1>
 
-<div class="row m-5">
+<div class="alert alert-warning d-flex align-items-center" role="alert">
+    <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Warning:"><use xlink:href="#exclamation-triangle-fill" /></svg>
+    <div>
+        The exercise time is not static, meaning you can do it at any time you want, but <b style="font-weight:900">you have to do it on the same day.</b>
+    </div>
+</div>
     <div class="col-12">
         <div class="table-responsive flex-row justify-content-end">
-            <table class="table table-striped table-bordered" id="table_id">
+            <table class="table table-bordered" id="example">
                 <thead>
                     <tr>
                         <th>
@@ -32,44 +37,80 @@
                         <th>
                             @Html.DisplayNameFor(model => model.ExerciseTimeFormat)
                         </th>
-                        <th></th>
+                        <th>State</th>
                     </tr>
                 </thead>
                 <tbody>
                     @foreach (var item in Model)
                     {
-                    <tr>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.Title)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.ExerciseCount)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.ExerciseDuration)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.DateOfExercise)
-                        </td>
-                        <td>
-                            @item.ExerciseFrom.ToString(@"hh\:mm")
-                        </td>
-                        <td>
-                            
-                            @item.ExerciseTO.ToString(@"hh\:mm")
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.ExerciseTimeFormat)
-                        </td>
-                        <td>
-                        </td>
-                    </tr>
+                    if(item.DateOfExercise < DateTime.Now)
+                    {
+                        <tr >
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Title)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.ExerciseCount)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.ExerciseDuration)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.DateOfExercise)
+                            </td>
+                            <td>
+                                @item.ExerciseFrom.ToString(@"hh\:mm")
+                            </td>
+                            <td>
+
+                                @item.ExerciseTO.ToString(@"hh\:mm")
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.ExerciseTimeFormat)
+                            </td>
+                            <td>
+                                <span class="badge bg-danger">Finished</span>
+                            </td>
+                        </tr>
+
                     }
+                    else
+                    {
+                        <tr>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Title)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.ExerciseCount)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.ExerciseDuration)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.DateOfExercise)
+                            </td>
+                            <td>
+                                @item.ExerciseFrom.ToString(@"hh\:mm")
+                            </td>
+                            <td>
+
+                                @item.ExerciseTO.ToString(@"hh\:mm")
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.ExerciseTimeFormat)
+                            </td>
+                            <td>
+                                <span class="badge bg-success">In progress</span>
+                            </td>
+                        </tr>
+
+                    }
+                }
                 </tbody>
             </table>
 
         </div>
 
     </div>
-</div>
+
 

@@ -13,7 +13,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace FitnessApp.Controllers
 {
-    [Authorize(Roles =Roles.Admin)]
+    
     public class InvoiceController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -26,6 +26,7 @@ namespace FitnessApp.Controllers
         }
 
         // GET: Invoice
+        [Authorize(Roles = Roles.Admin)]
         public async Task<IActionResult> Index()
         {
             var applicationDbContext = _context.Invoices
@@ -35,6 +36,7 @@ namespace FitnessApp.Controllers
         }
 
         // GET: Invoice/Details/5
+
         public async Task<IActionResult> Details(string id)
         {
             if (id == null)
@@ -54,6 +56,7 @@ namespace FitnessApp.Controllers
         }
 
         // GET: Invoice/Create
+        [Authorize(Roles = Roles.Admin)]
         public IActionResult Create()
         {
             return View();
@@ -126,6 +129,7 @@ namespace FitnessApp.Controllers
 
 
         // GET: Invoice/Edit/5
+        [Authorize(Roles = Roles.Admin)]
         public async Task<IActionResult> Edit(string id)
         {
             if (id == null)
@@ -178,6 +182,7 @@ namespace FitnessApp.Controllers
         }
 
         // GET: Invoice/Delete/5
+        [Authorize(Roles = Roles.Admin)]
         public async Task<IActionResult> Delete(string id)
         {
             if (id == null)

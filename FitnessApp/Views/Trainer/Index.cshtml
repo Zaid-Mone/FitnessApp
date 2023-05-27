@@ -27,7 +27,7 @@
                         @Html.DisplayFor(modelItem => item.Person.Email)
                     </td>
                     <td>
-                        <partial name="_Buttons" model="@item.Id" />
+                        <a asp-action="Edit" asp-route-id="@item.Id"><i class="fas fa-edit"></i></a>
                     </td>
                 </tr>
             }

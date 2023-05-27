@@ -10,6 +10,10 @@ using FitnessApp.Models;
 using Microsoft.AspNetCore.Authorization;
 using FitnessApp.Utility;
 using FitnessApp.DTOs;
+using Infobip.Api.Client.Api;
+using Infobip.Api.Client.Model;
+using Infobip.Api.Client;
+using Microsoft.AspNetCore.Identity;
 
 namespace FitnessApp.Controllers
 {
@@ -17,11 +21,19 @@ namespace FitnessApp.Controllers
     {
         private readonly ApplicationDbContext _context;
         private readonly GetCurrentUserProperties _getCurrentUserProperties;
-        public RegistrationNotificationController(ApplicationDbContext context, 
-            GetCurrentUserProperties getCurrentUserProperties)
+        private readonly UserManager<Person> _userManager;
+        private static readonly string BASE_URL = "https://198j8x.api.infobip.com";
+        private static readonly string API_KEY = "61af7a6525013e553eee9dbedc906675-1065bab4-9405-4e6b-bdb2-f655638b2347";
+        private static readonly string SENDER = "InfoSMS";
+        private static readonly string RECIPIENT = "962780388117";
+        private static string MESSAGE_TEXT = "";
+        public RegistrationNotificationController(ApplicationDbContext context,
+            GetCurrentUserProperties getCurrentUserProperties,
+            UserManager<Person> userManager)
         {
             _context = context;
             _getCurrentUserProperties = getCurrentUserProperties;
+            _userManager = userManager;
         }
         [Authorize(Roles =Roles.Admin)]
         // GET: RegistrationNotification
@@ -68,6 +80,7 @@ namespace FitnessApp.Controllers
         {
             if (ModelState.IsValid)
             {
+                string password = "User1234*";
                 var result = _getCurrentUserProperties.CheckUserExistance(registrationNotification.Email);
                 if (result )
                 {
@@ -75,19 +88,130 @@ namespace FitnessApp.Controllers
                     return View(registrationNotification);
                 }
                 registrationNotification.Id = Guid.NewGuid().ToString();
-                
+                var firstname = registrationNotification.Email.Substring(0, registrationNotification.Email.IndexOf("@"));
                 _context.Add(registrationNotification);
                 await _context.SaveChangesAsync();
                 SendToBecomeAMemberMessage.BecomeAMemberMessage();
+                var username = registrationNotification.Email.Substring(0, registrationNotification.Email.IndexOf("@"));
+                var user = new Person
+                {
+                     Email =registrationNotification.Email,
+                     Gender = registrationNotification.Gender,
+                     EmailConfirmed =true,
+                     PhoneNumber =registrationNotification .PhoneNumber,
+                     PhoneNumberConfirmed = true,
+                     RegisterDate = DateTime.Now,
+                     Role =Roles.Member,
+                     UserName = registrationNotification.Email,
+                     UserAvatar = $"https://ui-avatars.com/api/?name={username}"
+                };
+
+                var check = await _userManager.FindByEmailAsync(registrationNotification.Email);
+                if (check != null)
+                {
+                    ModelState.AddModelError("", "Email is already used");
+                    return View(registrationNotification);
+                }
+                
+
+                    // Create person
+                  _userManager.CreateAsync(user, password).GetAwaiter().GetResult();
+                _userManager.AddToRoleAsync(user,Roles.Member).GetAwaiter().GetResult();
+
+
+                var memeberDTO = new WeightCalculateDTO
+                {
+                    Weight = registrationNotification.Weight,
+                    Height = registrationNotification.Height,
+                    Age = registrationNotification.Age
+                };
+                // get gymbundle
+                var gym = _context.GymBundles.Where(q => q.Id == registrationNotification.GymBundleId).FirstOrDefault();
+                var date = DateTime.Now;
+                // Create member
+                var member = new Member
+                {
+                    Id = Guid.NewGuid().ToString(),
+                    Age = registrationNotification.Age,
+                    Height = registrationNotification.Height,
+                    DateOfBirth = registrationNotification.DateOfBirth,
+                    GymBundle = registrationNotification.GymBundle,
+                    PersonId = user.Id,
+                    Weight = registrationNotification.Weight,
+                    BMIStatus= WeightState.SetWeightStatus(registrationNotification.Height, registrationNotification.Weight),
+                    ExpectedWeight = CalculateWeight.GetPerfectWeight(memeberDTO),
+                    IsMemberOverWeight = CalculateWeight.IsOverweight(memeberDTO),
+                    MembershipFrom = date,
+                };
+                member.MembershipTo = member.MembershipFrom.AddDays((double)gym.NumberOfDays);
+                _context.Members.Add(member);
+                await _context.SaveChangesAsync();
+
+
+                var trainer = _context.Trainers.Where(q => q.Id == registrationNotification.TrainerId).FirstOrDefault();
+
+                // add Trainers Members
+                var trainermember = new TrainersMember()
+                {
+                    Id = Guid.NewGuid().ToString(),
+                    MemberId = member.Id,
+                    TrainerId = trainer.Id,
+                };
+                _context.TrainersMembers.Add(trainermember);
+                await _context.SaveChangesAsync();
+                SendRegistrationNotificationMessageSMS(firstname, registrationNotification.Email, password);
                 return RedirectToAction(nameof(Index),"Home");
             }
             return View(registrationNotification);
         }
 
 
+        public void SendRegistrationNotificationMessageSMS(string firstname, string username, string password )
+        {
+            // message ="Dear Member {username} Welocme to Fitness Training your username:{Username }
+            // and your password :{password}"
+            Task.Delay(10000).GetAwaiter().GetResult();
+            MESSAGE_TEXT = $"Dear ${ firstname} Thank you for registering with us. We welcome you as a new member and wish you success." +
+                $"Your Username : ${ username} " +
+                $"Your password : ${ password} ";
 
 
+            var configuration = new Configuration()
+            {
+                BasePath = BASE_URL,
+                ApiKeyPrefix = "App",
+                ApiKey = API_KEY
+            };
 
+            var sendSmsApi = new SendSmsApi(configuration);
+
+            var smsMessage = new SmsTextualMessage()
+            {
+                From = SENDER,
+                Destinations = new List<SmsDestination>()
+                {
+                    new SmsDestination(to: RECIPIENT)
+                },
+                Text = MESSAGE_TEXT
+            };
+
+            var smsRequest = new SmsAdvancedTextualRequest()
+            {
+                Messages = new List<SmsTextualMessage>() { smsMessage }
+            };
+
+            try
+            {
+                var smsResponse = sendSmsApi.SendSmsMessage(smsRequest);
+
+                Console.WriteLine("Response: " + smsResponse.Messages.FirstOrDefault());
+            }
+            catch (ApiException apiException)
+            {
+                Console.WriteLine("Error occurred! \n\tMessage: {0}\n\tError content", apiException.ErrorContent);
+            }
+
+        }
 
 
 
@@ -202,6 +326,11 @@ namespace FitnessApp.Controllers
 
         //    return View(registrationNotification);
         //}
+
+
+
+
+
 
 
         private bool RegistrationNotificationExists(string id)

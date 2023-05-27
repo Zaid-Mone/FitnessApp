@@ -74,6 +74,20 @@ else if (User.IsInRole(Roles.Trainer))
                         <span class="nav-text">Dashboard</span>
                     </a>
                 </li>
+
+                <li>
+                    <a asp-controller="Nutrition" asp-action="Create" aria-expanded="false">
+                        <i class="icon icon-chart-bar-33"></i>
+                        <span class="nav-text">Add Nutrition</span>
+                    </a>
+                </li>
+
+                <li>
+                    <a asp-controller="Exercise" asp-action="Create" aria-expanded="false">
+                        <i class="icon icon-chart-bar-33"></i>
+                        <span class="nav-text">Add Exercise</span>
+                    </a>
+                </li>
             </ul>
         </div>
     </div>
