@@ -7,6 +7,8 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Twilio;
+using Twilio.Rest.Api.V2010.Account;
 
 namespace FitnessApp.Utility
 {
@@ -47,40 +49,13 @@ namespace FitnessApp.Utility
                       $"At ${invoice.UserPayDate.ToString("D")}";
 
 
-            var configuration = new Configuration()
-            {
-                BasePath = BASE_URL,
-                ApiKeyPrefix = "App",
-                ApiKey = API_KEY
-            };
+            TwilioClient.Init("AC25d65ead0eb7a0d38cfd4070bb628425", "ccdd0eb2421e3be71eb5224104863c67");
 
-            var sendSmsApi = new SendSmsApi(configuration);
-
-            var smsMessage = new SmsTextualMessage()
-            {
-                From = SENDER,
-                Destinations = new List<SmsDestination>()
-                {
-                    new SmsDestination(to: RECIPIENT)
-                },
-                Text = MESSAGE_TEXT
-            };
-
-            var smsRequest = new SmsAdvancedTextualRequest()
-            {
-                Messages = new List<SmsTextualMessage>() { smsMessage }
-            };
-
-            try
-            {
-                var smsResponse = sendSmsApi.SendSmsMessage(smsRequest);
-
-                Console.WriteLine("Response: " + smsResponse.Messages.FirstOrDefault());
-            }
-            catch (ApiException apiException)
-            {
-                Console.WriteLine("Error occurred! \n\tMessage: {0}\n\tError content", apiException.ErrorContent);
-            }
+            var message = MessageResource.Create(
+                body: "Join Earth's mightiest heroes. Like Kevin Bacon.",
+                from: new Twilio.Types.PhoneNumber("+15017122661"),
+                to: new Twilio.Types.PhoneNumber("+15558675310")
+            );
 
         }
 
