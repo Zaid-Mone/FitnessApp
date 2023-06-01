@@ -1,0 +1,27 @@
+        //public JsonResult GetAllMembersForInvoice()
+        //{
+        //    List<Member> members = new List<Member>();
+        //    List<Invoice> memberInvoice = new List<Invoice>();
+        //    var users = _userManager.GetUsersInRoleAsync(Roles.Member).GetAwaiter().GetResult();
+        //    var t = _context.Trainers.ToList();
+        //    foreach (var item in users)
+        //    {
+        //        var member = _context.Members
+        //            .Include(q => q.Person)
+        //            .Include(q => q.GymBundle)
+        //            .FirstOrDefault(q => q.PersonId == item.Id);
+
+        //        var invoice = _context.Invoices
+        //            .Include(q => q.Member)
+        //            .Where(q => q.MemberId == member.Id && q.IsFullyPaid == false)
+        //            .ToList();
+
+        //        if (member != null && invoice != null)
+        //        {
+        //            members.Add(member);
+        //        }
+        //    }
+
+
+        //    return new JsonResult(members);
+        //}

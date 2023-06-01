@@ -3,66 +3,113 @@
     ViewData["Title"] = "MyNutrations";
 }
 
-<h1>My Nutrations</h1>
+<h1>My Nutritions</h1>
+<link href="~/css/filters.css" rel="stylesheet" />
 
-
+<div class="row">
+    <div class="col-10"></div>
+    <div class="col-2">
+        <div>
+            <label><span style="font-weight:900;" class="text-dark">Sort by :</span></label>
+            <form asp-controller="Profile" asp-action="MyNutrations"  method="get" id="filterForm">
+                <select id="dateFilter" name="filter">
+                <option selected disabled>Please Select </option>
+                <option value="all">All</option>
+                <option value="today">Date (Today)</option>
+                <option value="finished">Finished (State)</option>
+                <option value="active">Active (State)</option>
+                <option value="notstarted">Not Started (State)</option>
+            </select>
+                <button type="submit" class="btn btn-primary btn-sm">Filter</button>
+            </form>
+        </div>
+    </div>
+</div>
     <div class="col-12">
         <div class="table-responsive flex-row justify-content-end">
-            <table class="table table-bordered" id="example" >
+        <table class="table table-bordered selectpicker" id="example"  data-live-search="true">
                 <thead>
                     <tr>
-                        <th>
-                            @Html.DisplayNameFor(model => model.MealName)
-                        </th>
-                        <th>
-                            @Html.DisplayNameFor(model => model.DateOfNutrition)
-                        </th>
-                        <th>
-                            @Html.DisplayNameFor(model => model.NameOfDay)
-                        </th>
-                        <th>State</th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.MealType)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.MealName)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.DateOfNutrition)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.NameOfDay)
+                    </th>
+                    <th>State</th>
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach (var item in Model)
+                @foreach (var item in Model)
+                {
+                    if (Convert.ToDateTime(item.DateOfNutrition.ToShortDateString()) < Convert.ToDateTime(DateTime.Now.ToShortDateString()))
                     {
-                        if(item.DateOfNutrition < DateTime.Now)
-                        {
-                            <tr >
-                                <td>
-                                    @Html.DisplayFor(modelItem => item.MealName)
-                                </td>
-                                <td>
-                                    @Html.DisplayFor(modelItem => item.DateOfNutrition)
-                                </td>
-                                <td>
-                                    @Html.DisplayFor(modelItem => item.NameOfDay)
-                                </td>
-                                <td>
-                                    <span class="badge bg-danger">Finished</span>
-                                </td>
-                            </tr>
-
-                        }
-                        else
-                        {
-                            <tr >
-                                <td>
-                                    @Html.DisplayFor(modelItem => item.MealName)
-                                </td>
-                                <td>
-                                    @Html.DisplayFor(modelItem => item.DateOfNutrition)
-                                </td>
-                                <td>
-                                    @Html.DisplayFor(modelItem => item.NameOfDay)
-                                </td>
-                                <td>
-                                    <span class="badge bg-success">In progress</span>
-                                </td>
-                            </tr>
-
-                        }
+                        <tr>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.MealType)
+                            </td>
+                            <td>
+                                @Html.Raw(item.MealName)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.DateOfNutrition)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.NameOfDay)
+                            </td>
+                            <td>
+                                <span class="badge bg-danger text-dark">Finished</span>
+                            </td>
+                        </tr>
                     }
+                    else if (Convert.ToDateTime(item.DateOfNutrition.ToShortDateString()) == Convert.ToDateTime(DateTime.Now.ToShortDateString()))
+                    {
+                        <tr>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.MealType)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.MealName)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.DateOfNutrition)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.NameOfDay)
+                            </td>
+                            <td>
+                                <span class="badge bg-success text-dark">Active</span>
+                            </td>
+                        </tr>
+
+                    }
+                    else
+                    {
+                        <tr>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.MealType)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.MealName)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.DateOfNutrition)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.NameOfDay)
+                            </td>
+                            <td>
+                                <span class="badge bg-warning text-dark">Not Started</span>
+                            </td>
+                        </tr>
+                    }
+                }
                 </tbody>
             </table>
 
@@ -71,5 +118,3 @@
             </div>
 
         </div>
-
-

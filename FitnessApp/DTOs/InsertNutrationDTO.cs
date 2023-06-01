@@ -1,4 +1,5 @@
-﻿using System;
+﻿using FitnessApp.Enums;
+using System;
 using System.ComponentModel.DataAnnotations;
 
 namespace FitnessApp.DTOs
@@ -12,5 +13,7 @@ namespace FitnessApp.DTOs
         [DataType(DataType.Date)]
         [Display(Name = "Date Of Nutrition")]
         public DateTime DateOfNutrition { get; set; }
+        [Display(Name = "Meal Type")]
+        public MealType MealType { get; set; }
     }
 }

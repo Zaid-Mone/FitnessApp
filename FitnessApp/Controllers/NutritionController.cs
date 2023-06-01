@@ -74,10 +74,14 @@ namespace FitnessApp.Controllers
                     DateOfNutrition = insertNutrationDTO.DateOfNutrition,
                     NameOfDay = insertNutrationDTO.DateOfNutrition.DayOfWeek.ToString()
                      + "-" +
-                     insertNutrationDTO.DateOfNutrition.Year.ToString()
+                     insertNutrationDTO.DateOfNutrition.Year.ToString(),
+                    MealType = insertNutrationDTO.MealType
                 };
                 _context.Nutritions.Add(nut);
                 await _context.SaveChangesAsync();
+
+
+
                 return RedirectToAction(nameof(Index));
             }
             return View(insertNutrationDTO);
@@ -91,7 +95,9 @@ namespace FitnessApp.Controllers
                 return NotFound();
             }
 
-            var nutrition = await _context.Nutritions.Include(q => q.Member).SingleOrDefaultAsync(q => q.Id == id);
+            var nutrition = await _context.Nutritions.Include(q => q.Member)
+                .ThenInclude(q=>q.Person)
+                .SingleOrDefaultAsync(q => q.Id == id);
             var memberId = _context.Members.Where(q => q.Id == nutrition.MemberId).Select(q => q.Id).FirstOrDefault();
             ViewBag.memberId = memberId;
             if (nutrition == null)
@@ -118,6 +124,7 @@ namespace FitnessApp.Controllers
                     nutrition.NameOfDay = nutrition.DateOfNutrition.DayOfWeek.ToString()
                      + "-" +
                      nutrition.DateOfNutrition.Year.ToString();
+                   
                     _context.Update(nutrition);
                     await _context.SaveChangesAsync();
                 }

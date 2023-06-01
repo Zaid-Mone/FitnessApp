@@ -1,4 +1,5 @@
 ﻿@using FitnessApp.DTOs
+@using FitnessApp.Enums;
 @model InsertNutrationDTO
 
 
@@ -9,27 +10,44 @@
 <h4>Create Nutrition</h4>
 <hr />
 <div class="row">
-    <div class="col-md-4">
+    <div class="col-md-12">
         <form asp-action="Create">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+  
+            <div class="row">
+                <div class="form-group col-6">
+                    <label asp-for="MemberId" class="control-label"></label>
+                    <select asp-for="MemberId" class="form-control" id="memberSelector">
+                        <option disabled selected> Select Member</option>
+                    </select>
+                    <span asp-validation-for="MemberId" class="text-danger"></span>
+                </div>
+                <div class="form-group col-6 mt-n1">
+                    <label class="form-label" for="MealType">MealType</label>
+                    <select asp-for="MealType" class="form-control mt-1" asp-items="@Html.GetEnumSelectList<MealType>()">
+                        <option selected disabled>Select MealType</option>
+                    </select>
+                    <span class="text-danger" asp-validation-for="MealType"></span>
+                </div>
+            </div>
 
-            <div class="form-group">
-                <label asp-for="MemberId" class="control-label"></label>
-                <select asp-for="MemberId" class="form-control" id="memberSelector">
-                    <option disabled selected> Select Member</option>
-                </select>
-                <span asp-validation-for="MemberId" class="text-danger"></span>
+            <div class="row">
+                <div class="form-group col-12">
+                    <label asp-for="DateOfNutrition" class="control-label"></label>
+                    <input asp-for="DateOfNutrition" class="form-control" />
+                    <span asp-validation-for="DateOfNutrition" class="text-danger"></span>
+                </div>
             </div>
-            <div class="form-group">
-                <label asp-for="MealName" class="control-label"></label>
-                <input asp-for="MealName" class="form-control" />
-                <span asp-validation-for="MealName" class="text-danger"></span>
+            <div class="row">
+                <div class="form-group col-12">
+                    <label asp-for="MealName" class="control-label"></label>
+                    <textarea asp-for="MealName" class="form-control" ></textarea>
+                    <span asp-validation-for="MealName" class="text-danger"></span>
+                </div>
             </div>
-            <div class="form-group">
-                <label asp-for="DateOfNutrition" class="control-label"></label>
-                <input asp-for="DateOfNutrition" class="form-control" />
-                <span asp-validation-for="DateOfNutrition" class="text-danger"></span>
-            </div>
+
+            
+
 
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />
@@ -63,5 +81,14 @@
             // handle error
             console.log(error);
         })
+    </script>
+
+
+    <script>
+        tinymce.init({
+            selector: 'textarea',
+            plugins: 'anchor autolink charmap codesample emoticons image link lists media searchreplace table visualblocks wordcount',
+            toolbar: 'undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link image media table | align lineheight | numlist bullist indent outdent | emoticons charmap | removeformat',
+        });
     </script>
 }

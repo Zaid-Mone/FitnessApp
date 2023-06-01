@@ -1,4 +1,5 @@
-﻿using FitnessApp.Models;
+﻿using FitnessApp.Enums;
+using FitnessApp.Models;
 using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -17,6 +18,8 @@ namespace FitnessApp.DTOs
         [Display(Name = "Name Of Day")]
         public string NameOfDay { get; set; }
         [Display(Name = "Member Name")]
-        public string MemberName { get; set; } 
+        public string MemberName { get; set; }
+        [Display(Name = "Meal Type")]
+        public MealType MealType { get; set; }
     }
 }

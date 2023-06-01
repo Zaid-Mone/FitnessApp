@@ -1,5 +1,5 @@
 ﻿@model FitnessApp.Models.Nutrition
-
+@using FitnessApp.Enums;
 @{
     ViewData["Title"] = "Edit";
     var memberId = (string)ViewBag.memberId;
@@ -10,23 +10,46 @@
 <h3>Edit Nutrition</h3>
 <hr />
 <div class="row">
-    <div class="col-md-4">
+    <div class="col-md-12">
         <form asp-action="Edit">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="Id" />
             <input type="hidden" asp-for="NameOfDay" />
             <input type="hidden" name="MemberId" value="@memberId" />
-            <div class="form-group">
-                <label asp-for="MealName" class="control-label"></label>
-                <input asp-for="MealName" class="form-control" />
-                <span asp-validation-for="MealName" class="text-danger"></span>
+            <div class="container-fluid">
+            <div class="row">
+                <div class="form-group col-6 mt-1">
+                    <label asp-for="Member" class="control-label"></label>
+                    <input asp-for="Member.Person.Email" class="form-control" disabled/>
+                    <span asp-validation-for="Member.Person.Email" class="text-danger"></span>
+                </div>
+                <div class="form-group col-6">
+                    <label class="form-label" for="MealType">MealType</label>
+                    <select asp-for="MealType" class="form-control mt-1" asp-items="@Html.GetEnumSelectList<MealType>()">
+                        <option selected disabled>Select MealType</option>
+                    </select>
+                    <span class="text-danger" asp-validation-for="MealType"></span>
+                </div>
+
+
             </div>
-            <div class="form-group">
-                <label asp-for="DateOfNutrition" class="control-label"></label>
-                <input asp-for="DateOfNutrition" class="form-control" />
-                <span asp-validation-for="DateOfNutrition" class="text-danger"></span>
+            <div>
+                <div class="form-group col-12">
+                    <label asp-for="DateOfNutrition" class="control-label"></label>
+                    <input asp-for="DateOfNutrition" class="form-control" />
+                    <span asp-validation-for="DateOfNutrition" class="text-danger"></span>
+                </div>
             </div>
 
+
+            <div class="row">
+                <div class="form-group col-12">
+                    <label asp-for="MealName" class="control-label"></label>
+                    <textarea asp-for="MealName" class="form-control"></textarea>
+                    <span asp-validation-for="MealName" class="text-danger"></span>
+                </div>
+            </div>
+            </div>
             <div class="form-group">
                 <input type="submit" value="Save" class="btn btn-primary" />
                 <a asp-action="Index" class="btn btn-secondary">Back to List</a>
@@ -37,4 +60,14 @@
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+
+
+    <script>
+        tinymce.init({
+            selector: 'textarea',
+            plugins: 'anchor autolink charmap codesample emoticons image link lists media searchreplace table visualblocks wordcount',
+            toolbar: 'undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link image media table | align lineheight | numlist bullist indent outdent | emoticons charmap | removeformat',
+        });
+    </script>
+
 }

@@ -198,32 +198,67 @@ namespace FitnessApp.Controllers
                 .ToList();
             return new JsonResult(gym);
         }
-        //public JsonResult GetAllMembersForInvoice()
-        //{
-        //    List<Member> members = new List<Member>();
-        //    List<Invoice> memberInvoice = new List<Invoice>();
-        //    var users = _userManager.GetUsersInRoleAsync(Roles.Member).GetAwaiter().GetResult();
-        //    var t = _context.Trainers.ToList();
-        //    foreach (var item in users)
-        //    {
-        //        var member = _context.Members
-        //            .Include(q => q.Person)
-        //            .Include(q => q.GymBundle)
-        //            .FirstOrDefault(q => q.PersonId == item.Id);
-
-        //        var invoice = _context.Invoices
-        //            .Include(q => q.Member)
-        //            .Where(q => q.MemberId == member.Id && q.IsFullyPaid == false)
-        //            .ToList();
-
-        //        if (member != null && invoice != null)
-        //        {
-        //            members.Add(member);
-        //        }
-        //    }
 
 
-        //    return new JsonResult(members);
-        //}
+        // ------ For My Nutation page
+
+
+
+        public JsonResult GetMyNutraitonByParam(string filter)
+        {
+            var result = new List<Nutrition>();
+            result = _context.Nutritions
+            .Include(n => n.Member)
+            .Include(q => q.Member.Person)
+            .ToList();
+            switch (filter.ToLower())
+            {
+                case "all":
+                    result = _context.Nutritions
+                        .Include(n => n.Member)
+                        .Include(q => q.Member.Person)
+                        .ToList();
+                    break;
+
+                case "today":
+                    result = _context.Nutritions
+                        .Include(n => n.Member)
+                        .Include(q => q.Member.Person)
+                        .Where(q=>q.DateOfNutrition.Date == DateTime.Now.Date)
+                        .ToList();
+                    break;
+
+                case "finished":
+                    result = _context.Nutritions
+                        .Include(n => n.Member)
+                        .Include(q => q.Member.Person)
+                        .Where(q => q.DateOfNutrition < DateTime.Now)
+                        .ToList();
+                    break;
+                case "active":
+                    result = _context.Nutritions
+                        .Include(n => n.Member)
+                        .Include(q => q.Member.Person)
+                        .Where(q => q.DateOfNutrition < DateTime.Now)
+                        .ToList();
+                    break;
+                case "notstarted":
+                    result = _context.Nutritions
+                        .Include(n => n.Member)
+                        .Include(q => q.Member.Person)
+                        .Where(q => q.DateOfNutrition > DateTime.Now)
+                        .ToList();
+                    break;
+            }
+
+
+            return new JsonResult(result);
+        }
+
+
+
+
+
+
     }
 }

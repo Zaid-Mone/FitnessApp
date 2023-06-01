@@ -1,0 +1,19 @@
+﻿.container {
+    display: flex;
+    justify-content: flex-start;
+}
+
+.col-4 {
+    flex: 0 0 33.33%;
+}
+
+@media (max-width: 768px) {
+    .container {
+        flex-direction: column;
+    }
+
+    .col-4 {
+        flex: 1 1 auto;
+        margin-bottom: 20px;
+    }
+}

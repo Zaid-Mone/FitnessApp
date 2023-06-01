@@ -1,4 +1,5 @@
-﻿using System;
+﻿using FitnessApp.Enums;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -21,8 +22,12 @@ namespace FitnessApp.Models
         public DateTime DateOfNutrition { get; set; }
         [Display(Name = "Name Of Day")]
         public string NameOfDay { get; set; }
+        [Required]
+        [Display(Name = "Meal Type")]
+        public MealType MealType { get; set; }
         [NotMapped]
         public List<TrainersMember> TrainersMembers { get; }
+        
     }
 
 }
