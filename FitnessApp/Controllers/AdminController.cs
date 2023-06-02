@@ -74,7 +74,7 @@ namespace FitnessApp.Controllers
                     Gender = insertAdminDTO.Gender,
                     EmailConfirmed = true,
                     RegisterDate = DateTime.Now,
-                    PhoneNumber = insertAdminDTO.PhoneNumber,
+                    PhoneNumber = "962789292164",
                     PhoneNumberConfirmed = true,
                     Role = Roles.Admin,
                     UserName = insertAdminDTO.Email,

@@ -22,10 +22,10 @@ namespace FitnessApp.Controllers
         private readonly ApplicationDbContext _context;
         private readonly GetCurrentUserProperties _getCurrentUserProperties;
         private readonly UserManager<Person> _userManager;
-        private static readonly string BASE_URL = "https://198j8x.api.infobip.com";
-        private static readonly string API_KEY = "61af7a6525013e553eee9dbedc906675-1065bab4-9405-4e6b-bdb2-f655638b2347";
+        private static readonly string BASE_URL = "https://lzkrer.api.infobip.com";
+        private static readonly string API_KEY = "fa66f2e740c11cf729bec1838f6a7929-c8d5e304-f0b6-4860-9d27-3f4694285a0a";
         private static readonly string SENDER = "InfoSMS";
-        private static readonly string RECIPIENT = "962780388117";
+        private static readonly string RECIPIENT = "962789292164";
         private static string MESSAGE_TEXT = "";
         public RegistrationNotificationController(ApplicationDbContext context,
             GetCurrentUserProperties getCurrentUserProperties,
@@ -98,7 +98,7 @@ namespace FitnessApp.Controllers
                      Email =registrationNotification.Email,
                      Gender = registrationNotification.Gender,
                      EmailConfirmed =true,
-                     PhoneNumber =registrationNotification .PhoneNumber,
+                     PhoneNumber = "962789292164",
                      PhoneNumberConfirmed = true,
                      RegisterDate = DateTime.Now,
                      Role =Roles.Member,
@@ -171,9 +171,9 @@ namespace FitnessApp.Controllers
             // message ="Dear Member {username} Welocme to Fitness Training your username:{Username }
             // and your password :{password}"
             Task.Delay(10000).GetAwaiter().GetResult();
-            MESSAGE_TEXT = $"Dear ${ firstname} Thank you for registering with us. We welcome you as a new member and wish you success." +
-                $"Your Username : ${ username} " +
-                $"Your password : ${ password} ";
+            MESSAGE_TEXT = $"Dear { firstname} Thank you for registering with us. We welcome you as a new member and wish you success." +
+                $"Your Username : { username} " +
+                $"Your password : { password} ";
 
 
             var configuration = new Configuration()

@@ -18,10 +18,10 @@ namespace FitnessApp.Utility
         {
             _context = context;
         }
-        private static readonly string BASE_URL = "https://198j8x.api.infobip.com";
-        private static readonly string API_KEY = "61af7a6525013e553eee9dbedc906675-1065bab4-9405-4e6b-bdb2-f655638b2347";
+        private static readonly string BASE_URL = "https://lzkrer.api.infobip.com";
+        private static readonly string API_KEY = "fa66f2e740c11cf729bec1838f6a7929-c8d5e304-f0b6-4860-9d27-3f4694285a0a";
         private static readonly string SENDER = "InfoSMS";
-        private static readonly string RECIPIENT = "962780388117";
+        private static readonly string RECIPIENT = "962789292164";
         private static string MESSAGE_TEXT = "";
 
         public  void InvoiceMessageWithoutRemainingAmmount(string id)
@@ -43,8 +43,8 @@ namespace FitnessApp.Utility
 
             MESSAGE_TEXT = $"Hello Dear Member ${user.Email.Substring(0, user.Email.IndexOf("@"))} " +
                       $"you have paid the Invoice bill number : #{invoice.SerialNumber} " +
-                      $"With value : ${invoice.Userpays.ToString("C")} " +
-                      $"At ${invoice.UserPayDate.ToString("D")}";
+                      $"With value : {invoice.Userpays.ToString("C")} " +
+                      $"At {invoice.UserPayDate.ToString("D")}";
 
 
             var configuration = new Configuration()
