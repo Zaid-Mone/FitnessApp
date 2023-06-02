@@ -219,5 +219,18 @@ namespace FitnessApp.Controllers
                 model.UserAvatar = model.UserAvatar;
             }
         }
+
+
+
+
+
+
+
+        public IActionResult AllUsers()
+        {
+            var users = _context.Users.ToList();
+            return View(users);
+        }
+
     }
 }

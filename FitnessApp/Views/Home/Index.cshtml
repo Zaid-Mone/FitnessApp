@@ -1,5 +1,9 @@
-﻿@{
+﻿@using Newtonsoft.Json;
+
+@{
     ViewData["Title"] = "Home Page";
+    var reee = (List<string>)ViewBag.trainerCounts;
+
 }
 
 
@@ -24,8 +28,102 @@
       });
 
 </script>
+@if (User.Identity.IsAuthenticated && User.IsInRole(Roles.Admin))
+{
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-lg-3 col-sm-6">
+                <div class="card">
+                    <div class="stat-widget-two card-body">
+                        <div class="stat-content">
+                            <div class="stat-text">Total Members</div>
+                            <div class="stat-digit">@ViewBag.Members</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-sm-6">
+                <div class="card">
+                    <div class="stat-widget-two card-body">
+                        <div class="stat-content">
+                            <div class="stat-text">Total Trainers</div>
+                            <div class="stat-digit">@ViewBag.Trainers</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-sm-6">
+                <div class="card">
+                    <div class="stat-widget-two card-body">
+                        <div class="stat-content">
+                            <div class="stat-text">Total Income</div>
+                            <div class="stat-digit">@ViewBag.Money</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-sm-6">
+                <div class="card">
+                    <div class="stat-widget-two card-body">
+                        <div class="stat-content">
+                            <div class="stat-text">Total Nutritions</div>
+                            <div class="stat-digit">@ViewBag.Nutration</div>
+                        </div>
+                    </div>
+                </div>
+                <!-- /# card -->
+            </div>
+            <!-- /# column -->
+        </div>
+        <div class="row">
+            <div class="col-xl-12 col-lg-12 col-md-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h4 class="card-title">Registration Overview</h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-xl-12 col-lg-12">
+                                <canvas id="myChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
 
-@if (User.Identity.IsAuthenticated)
+        <div class="row">
+            <div class="col-xl-12 col-lg-12 col-md-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h4 class="card-title">Donught Chart</h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-xl-12 col-lg-12">
+                                <canvas id="BarChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+
+}
+else if (User.Identity.IsAuthenticated && User.IsInRole(Roles.Trainer))
+{
+    <div class="row">
+        <div class="col-12">
+            <div id='calendar'></div>
+        </div>
+        <!-- /# column -->
+    </div>
+}
+else if (User.Identity.IsAuthenticated && User.IsInRole(Roles.Member))
 {
 
     <div class="row">
@@ -34,11 +132,9 @@
         </div>
         <!-- /# column -->
     </div>
-
 }
 else
 {
-
     <div class="container">
         <div class="row">
             <div class="col-lg-6 offset-lg-3">
@@ -108,3 +204,89 @@ else
     </div>
 
 }
+
+
+@section scripts{
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        // Get the canvas element
+        const canvas = document.getElementById('myChart');
+        // Create the chart context
+        const ctx = canvas.getContext('2d');
+        const customMonthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+        // Define the data and options for the Line Chart
+        const data = {
+            labels: customMonthNames,
+            datasets: [{
+                label: 'Users Registrtation',
+                data: @ViewBag.usersCount,
+                borderColor: 'rgba(75, 192, 192, 1)',
+                borderWidth: 1
+            }]
+        };
+        const options = {
+            responsive: true,
+            maintainAspectRatio: false
+        };
+        // Create the Line Chart
+        const myChart = new Chart(ctx, {
+            type: 'line',
+            data: data,
+            options: options
+        });
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <script>
+        // Get the canvas element
+        const BarChart = document.getElementById('BarChart');
+        // Create the chart context
+        const BarCtx = BarChart.getContext('2d');
+
+        var myList = @Html.Raw(JsonConvert.SerializeObject(reee));
+
+
+            console.log(myList)
+            console.log(@ViewBag.trainerCounts2)
+
+        // Define the data and options for the Bar Chart
+        const BarChartdata = {
+            labels: myList,
+            datasets: [{
+                label: 'My First Dataset',
+                data: @ViewBag.trainerCounts2,
+                backgroundColor: [
+                    'rgba(255, 99, 132, 0.2)',
+                    'rgba(54, 162, 235, 0.2)',
+                    'rgba(255, 206, 86, 0.2)',
+                    'rgba(75, 192, 192, 0.2)',
+                    'rgba(153, 102, 255, 0.2)',
+                    'rgba(255, 159, 64, 0.2)'
+                ],
+                borderColor: [
+                    'rgba(255, 99, 132, 1)',
+                    'rgba(54, 162, 235, 1)',
+                    'rgba(255, 206, 86, 1)',
+                    'rgba(75, 192, 192, 1)',
+                    'rgba(153, 102, 255, 1)',
+                    'rgba(255, 159, 64, 1)'
+                ],
+                borderWidth: 1
+            }]
+        };
+
+        const Baroptions = {
+            responsive: true,
+            maintainAspectRatio: false
+        };
+
+        // Create the Bar Chart
+        const myBarChart = new Chart(BarCtx, {
+            type: 'bar',
+            data: BarChartdata,
+            options: Baroptions
+        });
+    </script>
+
+}
+

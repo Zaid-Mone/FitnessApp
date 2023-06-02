@@ -5,6 +5,8 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
+using Polly;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -34,6 +36,73 @@ namespace FitnessApp.Controllers
         {
             if (_context.Users.Count() == 0 && _context.UserRoles.Count() == 0)
                 Seeding();
+
+
+            if(User.Identity.IsAuthenticated && User.IsInRole(Roles.Admin))
+            {        
+                // Get Total Members
+                var members = _userManager.GetUsersInRoleAsync(Roles.Member).GetAwaiter().GetResult().Count();
+                ViewBag.Members = members;
+
+                // Get Total Trainers
+                var trainers = _userManager.GetUsersInRoleAsync(Roles.Trainer).GetAwaiter().GetResult().Count();
+                ViewBag.Trainers = trainers;
+
+                // Total Income
+                var money = _context.Invoices.Sum(q => q.Userpays).ToString("C");
+                ViewBag.Money = money;
+
+                // Total Nutritions
+                var nutration = _context.Nutritions.Count();
+                ViewBag.Nutration = nutration;
+
+                // rteturn the user that register in specific month 
+                var usersByMonth = _context.Users
+                .GroupBy(u => new { u.RegisterDate.Year, u.RegisterDate.Month })
+                .Select(g => new { Month = g.Key.Month, Count = g.Count() })
+                .OrderBy(g => g.Month)
+                .ToList();
+
+                var userCounts = new List<int>();
+
+                for (int month = 1; month <= 12; month++)
+                {
+                    var userCount = usersByMonth.FirstOrDefault(g => g.Month == month)?.Count ?? 0;
+                    userCounts.Add(userCount);
+                }
+
+                var serializedData = JsonConvert.SerializeObject(userCounts);
+                ViewBag.usersCount= serializedData;
+
+
+                // rteturn the member belong to Trainer 
+
+                var trainerNames = _context.TrainersMembers
+                    .Include(q=>q.Trainer)
+                    .ThenInclude(q=>q.Person)
+                    .Select(tm => tm.Trainer.Person.Email.Substring(0,tm.Trainer.Person.Email.IndexOf("@")))
+                    .Distinct()
+                    .ToList();
+                //var trainersSerializedData1 = JsonConvert.SerializeObject(trainerNames);
+                ViewBag.trainerCounts = trainerNames;
+
+                 
+
+                var trainerMemberCounts = _context.TrainersMembers
+                        .GroupBy(tm => tm.MemberId)
+                        .Select(g => new { TrainerID = g.Key, MemberCount = g.Count() })
+                        .ToList();
+                var memberCounts = trainerMemberCounts
+                            .Select(tm => tm.MemberCount)
+                            .ToList();
+
+
+                var trainersSerializedData2 = JsonConvert.SerializeObject(memberCounts);
+                ViewBag.trainerCounts2 = trainersSerializedData2;
+
+
+            }
+
             return View();
         }
 
