@@ -40,47 +40,25 @@ namespace FitnessApp.Utility
                     .FirstOrDefault();
             /* Find the user */
             var user = _context.Users.Where(q => q.Id == member.PersonId).FirstOrDefault();
-
-            MESSAGE_TEXT = $"Hello Dear Member ${user.Email.Substring(0, user.Email.IndexOf("@"))} " +
-                      $"you have paid the Invoice bill number : #{invoice.SerialNumber} " +
-                      $"With value : {invoice.Userpays.ToString("C")} " +
-                      $"At {invoice.UserPayDate.ToString("D")}";
-
-
-            var configuration = new Configuration()
+            if (invoice.IsFullyPaid)
             {
-                BasePath = BASE_URL,
-                ApiKeyPrefix = "App",
-                ApiKey = API_KEY
-            };
-
-            var sendSmsApi = new SendSmsApi(configuration);
-
-            var smsMessage = new SmsTextualMessage()
-            {
-                From = SENDER,
-                Destinations = new List<SmsDestination>()
-                {
-                    new SmsDestination(to: RECIPIENT)
-                },
-                Text = MESSAGE_TEXT
-            };
-
-            var smsRequest = new SmsAdvancedTextualRequest()
-            {
-                Messages = new List<SmsTextualMessage>() { smsMessage }
-            };
-
-            try
-            {
-                var smsResponse = sendSmsApi.SendSmsMessage(smsRequest);
-
-                Console.WriteLine("Response: " + smsResponse.Messages.FirstOrDefault());
+                MESSAGE_TEXT = $"Hello Dear Member {user.Email.Substring(0, user.Email.IndexOf("@"))} " +
+                        $"you have paid the Invoice bill number : #{invoice.SerialNumber} " +
+                        $"With value : {invoice.Userpays.ToString("C")} " +
+                        $"At {invoice.UserPayDate.ToString("D")}";
             }
-            catch (ApiException apiException)
+            else
             {
-                Console.WriteLine("Error occurred! \n\tMessage: {0}\n\tError content", apiException.ErrorContent);
+                MESSAGE_TEXT = $"Hello Dear Member {user.Email.Substring(0, user.Email.IndexOf("@"))} " +
+                            $"you have paid the Invoice bill number : #{invoice.SerialNumber} " +
+                            $"With value : {invoice.Userpays.ToString("C")} " +
+                            $"At {invoice.UserPayDate.ToString("D")}" +
+                            $"Your remaining Value is : {invoice.RemainingValue}";
             }
+
+            SendTheMessage(MESSAGE_TEXT);
+
+
 
         }
 
@@ -109,7 +87,29 @@ namespace FitnessApp.Utility
                 $"Please you have to pay before ${member.MembershipTo} ";
 
 
+            SendTheMessage(MESSAGE_TEXT);
+        }
 
+        public void SendInvoiceMessage(string id)
+        {
+            var invoice = _context.Invoices
+            .Include(q => q.Member)
+            .ThenInclude(q => q.Person)
+            .Where(q => q.Id == id)
+            .FirstOrDefault();
+
+            if (invoice.IsFullyPaid)
+            {
+                InvoiceMessageWithoutRemainingAmmount(id);
+            }
+            else
+            {
+                InvoiceMessageWitRemainingAmmount(id);
+            }
+        }
+
+        public void SendTheMessage(string MESSAGE_TEXT)
+        {
             var configuration = new Configuration()
             {
                 BasePath = BASE_URL,
@@ -143,25 +143,6 @@ namespace FitnessApp.Utility
             catch (ApiException apiException)
             {
                 Console.WriteLine("Error occurred! \n\tMessage: {0}\n\tError content", apiException.ErrorContent);
-            }
-
-        }
-
-        public void SendInvoiceMessage(string id)
-        {
-            var invoice = _context.Invoices
-            .Include(q => q.Member)
-            .ThenInclude(q => q.Person)
-            .Where(q => q.Id == id)
-            .FirstOrDefault();
-
-            if (invoice.IsFullyPaid)
-            {
-                InvoiceMessageWithoutRemainingAmmount(id);
-            }
-            else
-            {
-                InvoiceMessageWitRemainingAmmount(id);
             }
         }
     }
