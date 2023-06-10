@@ -1,5 +1,6 @@
-﻿@model FitnessApp.Models.Member
-
+﻿@*@model FitnessApp.Models.Member
+*@@using FitnessApp.DTOs;
+@model UpdateMember
 @{
     ViewData["Title"] = "Edit";
 }
@@ -12,7 +13,15 @@
     <div class="col-md-4">
         <form asp-action="Edit">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="Id" />
+            <input type="hidden" asp-for="MemberId" />
+            <input type="hidden" asp-for="PersonId" />
+            <input type="hidden" asp-for="MembershipFrom" />
+            <input type="hidden" asp-for="MembershipTo" />
+            <input type="hidden" asp-for="PersonEmail" />
+            <div class="form-group">
+                <label asp-for="PersonEmail" class="control-label"></label>
+                <input asp-for="PersonEmail" class="form-control" disabled />
+            </div>
             <div class="form-group">
                 <label asp-for="Age" class="control-label"></label>
                 <input asp-for="Age" class="form-control" />

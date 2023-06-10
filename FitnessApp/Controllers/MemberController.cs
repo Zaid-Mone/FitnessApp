@@ -167,35 +167,67 @@ namespace FitnessApp.Controllers
                 return NotFound();
             }
 
-            var member = await _context.Members.FindAsync(id);
+            var member = await _context.Members
+                .Include(q=>q.Person)
+                .Include(q=>q.GymBundle)
+                .SingleOrDefaultAsync(q=>q.Id==id);
             if (member == null)
             {
                 return NotFound();
             }
+            var updatemember = new UpdateMember
+            {
+                PersonId = member.PersonId,
+                GymBundleId = member.GymBundleId,
+                MemberId = member.Id,
+                Age = member.Age,
+                DateOfBirth = member.DateOfBirth,
+                Height = member.Height,
+                Weight = member.Weight,
+                PersonEmail = member.Person.Email,
+                MembershipFrom = member.MembershipFrom,
+                MembershipTo = member.MembershipTo
+            };
             ViewData["GymBundleId"] = new SelectList(_context.GymBundles, "Id", "BundleTitle", member.GymBundleId);
-            return View(member);
+
+            return View(updatemember);
         }
 
         // POST: Member/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(string id, Member member)
+        public async Task<IActionResult> Edit(UpdateMember updateMember)
         {
-            if (id != member.Id)
-            {
-                return NotFound();
-            }
-
             if (ModelState.IsValid)
             {
                 try
                 {
-                    _context.Update(member);
+                    var memeberDTO = new WeightCalculateDTO
+                    {
+                        Weight = updateMember.Weight,
+                        Height = updateMember.Height,
+                        Age = updateMember.Age
+                    };
+                    _context.Members.Update(new Member
+                    {
+                        Id = updateMember.MemberId,
+                        PersonId = updateMember.PersonId,
+                        GymBundleId= updateMember.GymBundleId,
+                        Height= updateMember.Height,
+                        Weight= updateMember.Weight,
+                        Age= updateMember.Age,
+                        DateOfBirth = updateMember.DateOfBirth,
+                        MembershipTo = updateMember.MembershipTo,
+                        MembershipFrom= updateMember.MembershipFrom,
+                        BMIStatus = WeightState.SetWeightStatus(memeberDTO.Height, memeberDTO.Weight),
+                        ExpectedWeight = CalculateWeight.GetPerfectWeight(memeberDTO),
+                        IsMemberOverWeight = CalculateWeight.IsOverweight(memeberDTO)
+                    });
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!MemberExists(member.Id))
+                    if (!MemberExists(updateMember.MemberId))
                     {
                         return NotFound();
                     }
@@ -206,8 +238,8 @@ namespace FitnessApp.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["GymBundleId"] = new SelectList(_context.GymBundles, "Id", "BundleTitle", member.GymBundleId);
-            return View(member);
+            ViewData["GymBundleId"] = new SelectList(_context.GymBundles, "Id", "BundleTitle", updateMember.GymBundleId);
+            return View(updateMember);
         }
 
         // GET: Member/Delete/5
