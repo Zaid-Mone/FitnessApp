@@ -12,6 +12,7 @@ using FitnessApp.DTOs;
 using System.Globalization;
 using FitnessApp.Utility;
 using Microsoft.AspNetCore.Authorization;
+using System.Security.Claims;
 
 namespace FitnessApp.Controllers
 {
@@ -31,9 +32,11 @@ namespace FitnessApp.Controllers
         // GET: Exercise
         public async Task<IActionResult> Index()
         {
+            var trainerId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             var applicationDbContext = _context.Exercises
                 .Include(e => e.Member)
-                .ThenInclude(q => q.Person);
+                .ThenInclude(q => q.Person)
+                .Where(q=>q.TrainerId == trainerId);
             return View(await applicationDbContext.ToListAsync());
         }
 
@@ -70,6 +73,8 @@ namespace FitnessApp.Controllers
             
             if (ModelState.IsValid)
             {
+                var personId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                var trainer = _context.Trainers.Include(q => q.Person).SingleOrDefault(q => q.PersonId == personId);
                 var res = (insertExerciseDTO.ExerciseTO - insertExerciseDTO.ExerciseFrom).TotalHours;
                 double durationHours = double.Parse(res.ToString());
                 TimeSpan duration = TimeSpan.FromHours(durationHours);
@@ -88,7 +93,8 @@ namespace FitnessApp.Controllers
                     Title = insertExerciseDTO.Title,
                     // save the time like H:M without seconds 
                     ExerciseTimeFormat = ChangeDateFormat.ConvertTimeLocal(insertExerciseDTO.ExerciseFrom) 
-                        + "-" + ChangeDateFormat.ConvertTimeLocal(insertExerciseDTO.ExerciseTO)
+                        + "-" + ChangeDateFormat.ConvertTimeLocal(insertExerciseDTO.ExerciseTO),
+                    TrainerId = trainer.Id
                 };
                 // check if the time that return to me has an hour ? if yes return time with hours Keyword
                 exercise.ExerciseDuration = (h != 0 ? exercise.ExerciseDuration + " Hours" : m + " Minutes");
@@ -130,6 +136,8 @@ namespace FitnessApp.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(string id,  Exercise exercise)
         {
+            var personId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var trainer = _context.Trainers.Include(q => q.Person).SingleOrDefault(q => q.PersonId == personId);
             if (id != exercise.Id)
             {
                 return NotFound();
@@ -147,7 +155,7 @@ namespace FitnessApp.Controllers
                     exercise.ExerciseTimeFormat = ChangeDateFormat.ConvertTimeLocal(exercise.ExerciseFrom) 
                                      + "-" + ChangeDateFormat.ConvertTimeLocal(exercise.ExerciseTO);
                     exercise.ExerciseDuration = (h != 0 ? exercise.ExerciseDuration + " Hours" : m + " Minutes");
-
+                    exercise.TrainerId= trainer.Id;
                     _context.Update(exercise);
                     await _context.SaveChangesAsync();
                 }

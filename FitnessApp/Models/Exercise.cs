@@ -35,6 +35,12 @@ namespace FitnessApp.Models
         public TimeSpan ExerciseTO { get; set; }
         [Display(Name = "Exercise Time")]
         public string ExerciseTimeFormat { get; set; }
+
+
+        [ForeignKey("TrainerId")]
+        [Display(Name = "Trainer")]
+        public string TrainerId { get; set; }
+        public Trainer Trainer { get; set; }
     }
 
 

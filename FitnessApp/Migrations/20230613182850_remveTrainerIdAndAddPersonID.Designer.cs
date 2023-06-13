@@ -4,14 +4,16 @@ using FitnessApp.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace FitnessApp.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230613182850_remveTrainerIdAndAddPersonID")]
+    partial class remveTrainerIdAndAddPersonID
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -61,18 +63,18 @@ namespace FitnessApp.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
+                    b.Property<string>("PersonId")
+                        .HasColumnType("nvarchar(450)");
+
                     b.Property<string>("Title")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("TrainerId")
-                        .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
 
                     b.HasIndex("MemberId");
 
-                    b.HasIndex("TrainerId");
+                    b.HasIndex("PersonId");
 
                     b.ToTable("Exercises");
                 });
@@ -196,14 +198,14 @@ namespace FitnessApp.Migrations
                     b.Property<string>("NameOfDay")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("TrainerId")
+                    b.Property<string>("PersonId")
                         .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
 
                     b.HasIndex("MemberId");
 
-                    b.HasIndex("TrainerId");
+                    b.HasIndex("PersonId");
 
                     b.ToTable("Nutritions");
                 });
@@ -490,9 +492,9 @@ namespace FitnessApp.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("FitnessApp.Models.Trainer", "Trainer")
+                    b.HasOne("FitnessApp.Models.Trainer", "Person")
                         .WithMany()
-                        .HasForeignKey("TrainerId");
+                        .HasForeignKey("PersonId");
                 });
 
             modelBuilder.Entity("FitnessApp.Models.Invoice", b =>
@@ -519,9 +521,9 @@ namespace FitnessApp.Migrations
                         .WithMany()
                         .HasForeignKey("MemberId");
 
-                    b.HasOne("FitnessApp.Models.Trainer", "Trainer")
+                    b.HasOne("FitnessApp.Models.Trainer", "Person")
                         .WithMany()
-                        .HasForeignKey("TrainerId");
+                        .HasForeignKey("PersonId");
                 });
 
             modelBuilder.Entity("FitnessApp.Models.RegistrationNotification", b =>

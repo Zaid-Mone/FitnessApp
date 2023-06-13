@@ -10,6 +10,7 @@ using FitnessApp.Models;
 using FitnessApp.DTOs;
 using Microsoft.AspNetCore.Authorization;
 using FitnessApp.Utility;
+using System.Security.Claims;
 
 namespace FitnessApp.Controllers
 {
@@ -26,10 +27,13 @@ namespace FitnessApp.Controllers
         // GET: Nutrition
         public async Task<IActionResult> Index()
         {
-            var applicationDbContext = _context.Nutritions
+            var personId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var trainer = _context.Trainers.Include(q => q.Person).SingleOrDefault(q => q.PersonId == personId);
+            var applicationDbContext = await _context.Nutritions
                 .Include(n => n.Member)
-                .Include(q => q.Member.Person);
-            return View(await applicationDbContext.ToListAsync());
+                .Include(q => q.Member.Person)
+                .Where(q=>q.TrainerId == trainer.Id).ToListAsync();
+            return View( applicationDbContext);
         }
 
         // GET: Nutrition/Details/5
@@ -65,6 +69,9 @@ namespace FitnessApp.Controllers
         {
             if (ModelState.IsValid)
             {
+                var personId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                var trainer = _context.Trainers.Include(q=>q.Person).SingleOrDefault(q => q.PersonId == personId);
+
                 var member = _context.Members.Where(q => q.Id == insertNutrationDTO.MemberId).FirstOrDefault();
                 var nut = new Nutrition()
                 {
@@ -75,7 +82,8 @@ namespace FitnessApp.Controllers
                     NameOfDay = insertNutrationDTO.DateOfNutrition.DayOfWeek.ToString()
                      + "-" +
                      insertNutrationDTO.DateOfNutrition.Year.ToString(),
-                    MealType = insertNutrationDTO.MealType
+                    MealType = insertNutrationDTO.MealType,
+                    TrainerId = trainer.Id
                 };
                 _context.Nutritions.Add(nut);
                 await _context.SaveChangesAsync();
@@ -95,11 +103,14 @@ namespace FitnessApp.Controllers
                 return NotFound();
             }
 
-            var nutrition = await _context.Nutritions.Include(q => q.Member)
+            var nutrition = await _context.Nutritions
+                .Include(q => q.Member)
                 .ThenInclude(q=>q.Person)
+                .Include(q=>q.Trainer)
                 .SingleOrDefaultAsync(q => q.Id == id);
             var memberId = _context.Members.Where(q => q.Id == nutrition.MemberId).Select(q => q.Id).FirstOrDefault();
             ViewBag.memberId = memberId;
+
             if (nutrition == null)
             {
                 return NotFound();
@@ -121,10 +132,12 @@ namespace FitnessApp.Controllers
             {
                 try
                 {
+                    var personId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                    var trainer = _context.Trainers.Include(q => q.Person).SingleOrDefault(q => q.PersonId == personId);
                     nutrition.NameOfDay = nutrition.DateOfNutrition.DayOfWeek.ToString()
                      + "-" +
                      nutrition.DateOfNutrition.Year.ToString();
-                   
+                   nutrition.TrainerId = trainer.Id; 
                     _context.Update(nutrition);
                     await _context.SaveChangesAsync();
                 }

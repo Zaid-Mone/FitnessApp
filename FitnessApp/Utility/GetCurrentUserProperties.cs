@@ -6,7 +6,6 @@ using Microsoft.AspNetCore.Identity;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using static System.Security.Claims.ClaimsPrincipal;
-using Microsoft.AspNetCore.Identity;
 namespace FitnessApp.Utility
 {
     [Authorize]

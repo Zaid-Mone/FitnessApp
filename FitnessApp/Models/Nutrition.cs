@@ -25,6 +25,12 @@ namespace FitnessApp.Models
         [Required]
         [Display(Name = "Meal Type")]
         public MealType MealType { get; set; }
+
+        [ForeignKey("TrainerId")]
+        [Display(Name = "Trainer")]
+        public string TrainerId { get; set; }
+        public Trainer Trainer { get; set; }
+
         [NotMapped]
         public List<TrainersMember> TrainersMembers { get; }
         

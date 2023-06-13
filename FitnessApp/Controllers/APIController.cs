@@ -256,31 +256,56 @@ namespace FitnessApp.Controllers
             return new JsonResult(result);
         }
 
-        //public async Task<IActionResult> GetMoviesCalendar()
-        //{
-        //    List<MovieDTO> moviesDTO = new List<MovieDTO>();
-        //    var movies = await _context.Movies.ToListAsync();
-        //    movies.ForEach((item) =>
-        //    {
-        //        var mov = new MovieDTO
-        //        {
-        //            title = item.MovieName,
-        //            start = item.MovieStartDate.Date, // Extract only the date part
-        //            end = item.MovieEndDate.Date // Extract only the date part
-        //        };
-        //        moviesDTO.Add(mov);
-        //    });
+        public async Task<IActionResult> GetMoviesCalendar()
+        {
+            List<EventDTO> moviesDTO = new List<EventDTO>();
+            var personId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var trainer = _context.Trainers.Include(q => q.Person).SingleOrDefault(q => q.PersonId == personId);
+            var nut = await _context.Nutritions
+                .Include(n => n.Member)
+                .Include(q => q.Member.Person)
+                .Where(q => q.TrainerId == trainer.Id).ToListAsync();
+            var execerise = await _context.Exercises.Where(q => q.MemberId == trainer.Id).ToListAsync();
+            nut.ForEach((item) =>
+            {
+                var title = RemoveHtmlTagsAndEntities(item.MealName);
+                var mov = new EventDTO
+                {
+                    title = title,
+                    start = item.DateOfNutrition.Date, 
+                    end = item.DateOfNutrition.Date 
+                };
+                moviesDTO.Add(mov);
+            });
 
-        //    string jsonDTO = JsonSerializer.Serialize(moviesDTO, new JsonSerializerOptions
-        //    {
-        //        WriteIndented = true,
-        //        Converters = { new DateTimeConverterWithoutTime() } // Custom converter to remove time
-        //    });
+            execerise.ForEach((item) =>
+            {
+                var title = RemoveHtmlTagsAndEntities(item.Title);
+                var mov = new EventDTO
+                {
+                    title = title,
+                    start = item.DateOfExercise.Date, 
+                    end = item.DateOfExercise.Date 
+                };
+                moviesDTO.Add(mov);
+            });
 
-        //    return Content(jsonDTO, "application/json");
-        //}
+            string jsonDTO = JsonSerializer.Serialize(moviesDTO, new JsonSerializerOptions
+            {
+                WriteIndented = true,
+                Converters = { new DateTimeConverterWithoutTime() } // Custom converter to remove time
+            });
 
+            return Content(jsonDTO, "application/json");
+        }
 
+        private string RemoveHtmlTagsAndEntities(string input)
+        {
+            string withoutPTags = input.Replace("<p>", "").Replace("</p>", "");
+            string withoutNbsp = withoutPTags.Replace("&nbsp;", "");
+            string finalResult = withoutNbsp.Trim();
+            return finalResult;
+        }
 
     }
 }
