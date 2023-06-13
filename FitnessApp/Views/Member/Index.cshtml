@@ -31,7 +31,12 @@
                 <th>
                     @Html.DisplayNameFor(model => model.Person)
                 </th>
-
+                <th>
+                    @Html.DisplayNameFor(model => model.BMIStatus)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.ExpectedWeight)
+                </th>
                 <th>Actions</th>
             </tr>
         </thead>
@@ -56,6 +61,12 @@
                     </td>
                     <td>
                         @Html.DisplayFor(modelItem => item.Person.Email)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.BMIStatus)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.ExpectedWeight)
                     </td>
                     <td>
                         <partial name="_Buttons" model="@item.Id" />

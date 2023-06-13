@@ -10,6 +10,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
+using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace FitnessApp.Controllers
@@ -255,8 +256,29 @@ namespace FitnessApp.Controllers
             return new JsonResult(result);
         }
 
+        //public async Task<IActionResult> GetMoviesCalendar()
+        //{
+        //    List<MovieDTO> moviesDTO = new List<MovieDTO>();
+        //    var movies = await _context.Movies.ToListAsync();
+        //    movies.ForEach((item) =>
+        //    {
+        //        var mov = new MovieDTO
+        //        {
+        //            title = item.MovieName,
+        //            start = item.MovieStartDate.Date, // Extract only the date part
+        //            end = item.MovieEndDate.Date // Extract only the date part
+        //        };
+        //        moviesDTO.Add(mov);
+        //    });
 
+        //    string jsonDTO = JsonSerializer.Serialize(moviesDTO, new JsonSerializerOptions
+        //    {
+        //        WriteIndented = true,
+        //        Converters = { new DateTimeConverterWithoutTime() } // Custom converter to remove time
+        //    });
 
+        //    return Content(jsonDTO, "application/json");
+        //}
 
 
 
