@@ -270,15 +270,6 @@ namespace FitnessApp.Controllers
             {
                 return NotFound();
             }
-           List<Invoice> inv =  _context.Invoices.Where(q => q.MemberId == id).ToList();
-            if(inv != null)
-            {
-                foreach (var item in inv)
-                {
-                    _context.Invoices.Remove(item);
-                }
-                _context.SaveChanges();
-            }
 
             var member = await _context.Members
                 .Include(m => m.GymBundle)
@@ -299,6 +290,44 @@ namespace FitnessApp.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(string id)
         {
+            List<Invoice> inv = _context.Invoices.Where(q => q.MemberId == id).ToList();
+            List<Nutrition> nut = _context.Nutritions.Where(q => q.MemberId == id).ToList();
+            List<Exercise> exer = _context.Exercises.Where(q => q.MemberId == id).ToList();
+            List<TrainersMember> trMeb = _context.TrainersMembers.Where(q => q.MemberId == id).ToList();
+            if (inv != null)
+            {
+                foreach (var item in inv)
+                {
+                    _context.Invoices.Remove(item);
+                }
+                _context.SaveChanges();
+            }
+
+            if (nut != null)
+            {
+                foreach (var item in nut)
+                {
+                    _context.Nutritions.Remove(item);
+                }
+                _context.SaveChanges();
+            }
+            if (exer != null)
+            {
+                foreach (var item in exer)
+                {
+                    _context.Exercises.Remove(item);
+                }
+                _context.SaveChanges();
+            }
+            if (trMeb != null)
+            {
+                foreach (var item in trMeb)
+                {
+                    _context.TrainersMembers.Remove(item);
+                }
+                _context.SaveChanges();
+            }
+
             var member = await _context.Members.FindAsync(id);
             _context.Members.Remove(member);
             await _context.SaveChangesAsync();
