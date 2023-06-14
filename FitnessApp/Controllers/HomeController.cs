@@ -41,7 +41,6 @@ namespace FitnessApp.Controllers
 
             if(User.Identity.IsAuthenticated && User.IsInRole(Roles.Admin))
             {
-                Geto();
                 // Get Total Members
                 var members = _userManager.GetUsersInRoleAsync(Roles.Member).GetAwaiter().GetResult().Count();
                 ViewBag.Members = members;
@@ -159,12 +158,11 @@ namespace FitnessApp.Controllers
         }
 
         // Called Stored Procedure
-        public void Geto()
-        {
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var userIdParameter = new SqlParameter("@UserId", userId);
-            var persons = _context.Users.FromSqlRaw("EXEC GetUserWithID @UserId", userIdParameter).ToList();
-
-        }
+        //public void Geto()
+        //{
+        //    var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        //    var userIdParameter = new SqlParameter("@UserId", userId);
+        //    var persons = _context.Users.FromSqlRaw("EXEC GetUserWithID @UserId", userIdParameter).ToList();
+        //}
     }
 }
