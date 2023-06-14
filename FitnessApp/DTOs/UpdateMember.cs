@@ -9,6 +9,7 @@ namespace FitnessApp.DTOs
         public string GymBundleId { get; set; }
         public string PersonId { get; set; }
         public string MemberId { get; set; }
+        public string TrainerId { get; set; }
         public int Age { get; set; }
         public float Weight { get; set; }
         public float Height { get; set; }

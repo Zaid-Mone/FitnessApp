@@ -36,13 +36,10 @@ namespace FitnessApp.Controllers
         {
             var applicationDbContext = await _context.Members
                 .Include(m => m.GymBundle)
-                .Include(q => q.TrainersMembers)
-                .ThenInclude(q => q.Trainer)
-                .Include(q => q.TrainersMembers)
-                .ThenInclude(q => q.Member)
                 .Include(q => q.Person)
+                .Include(q=>q.Trainer)
+                .Include(q=>q.Trainer.Person)
                 .ToListAsync();
-
             return View(applicationDbContext);
         }
 
@@ -88,7 +85,7 @@ namespace FitnessApp.Controllers
                     Gender = insertMemberDTO.Gender,
                     EmailConfirmed = true,
                     RegisterDate = DateTime.Now,
-                    PhoneNumber = "962789292164",
+                    PhoneNumber = "9627892921641",
                     PhoneNumberConfirmed = true,
                     Role = Roles.Member,
                     UserName = insertMemberDTO.Email,
@@ -117,8 +114,8 @@ namespace FitnessApp.Controllers
                     GymBundleId = insertMemberDTO.GymBundleId,
                     Height = insertMemberDTO.Height,
                     Weight = insertMemberDTO.Weight,
-                    PersonId = person.Id
-                    
+                    PersonId = person.Id,
+                    TrainerId=insertMemberDTO.TrainerId,
                 };
                 var memeberDTO = new WeightCalculateDTO
                 {
@@ -170,6 +167,7 @@ namespace FitnessApp.Controllers
             var member = await _context.Members
                 .Include(q=>q.Person)
                 .Include(q=>q.GymBundle)
+                .Include(q=>q.Trainer)
                 .SingleOrDefaultAsync(q=>q.Id==id);
             if (member == null)
             {
@@ -186,10 +184,17 @@ namespace FitnessApp.Controllers
                 Weight = member.Weight,
                 PersonEmail = member.Person.Email,
                 MembershipFrom = member.MembershipFrom,
-                MembershipTo = member.MembershipTo
+                MembershipTo = member.MembershipTo,
+                TrainerId = member.TrainerId,                
             };
-            ViewData["GymBundleId"] = new SelectList(_context.GymBundles, "Id", "BundleTitle", member.GymBundleId);
+            var trainers = await _context.Trainers
+            .Include(t => t.Person) // Include the related Person table
+            .ToListAsync();
 
+            ViewData["TrainerId"] = new SelectList(trainers, "Id", "Person.Name", member.TrainerId);
+
+            ViewData["GymBundleId"] = new SelectList(_context.GymBundles, "Id", "BundleTitle", member.GymBundleId);
+            ViewData["TrainerId"] = new SelectList(trainers, "Id", "Person.Email", member.TrainerId);
             return View(updatemember);
         }
 
@@ -202,6 +207,12 @@ namespace FitnessApp.Controllers
             {
                 try
                 {
+                    List<TrainersMember> trainermember = _context.TrainersMembers.Where(q => q.MemberId == updateMember.MemberId).ToList();
+                    foreach (var item in trainermember)
+                    {
+                        _context.TrainersMembers.Remove(item);
+                    }
+                    await _context.SaveChangesAsync();
                     var memeberDTO = new WeightCalculateDTO
                     {
                         Weight = updateMember.Weight,
@@ -221,7 +232,16 @@ namespace FitnessApp.Controllers
                         MembershipFrom= updateMember.MembershipFrom,
                         BMIStatus = WeightState.SetWeightStatus(memeberDTO.Height, memeberDTO.Weight),
                         ExpectedWeight = CalculateWeight.GetPerfectWeight(memeberDTO),
-                        IsMemberOverWeight = CalculateWeight.IsOverweight(memeberDTO)
+                        IsMemberOverWeight = CalculateWeight.IsOverweight(memeberDTO),
+                        TrainerId = updateMember.TrainerId,
+                    });
+                    await _context.SaveChangesAsync();
+
+                    _context.TrainersMembers.Add(new TrainersMember
+                    {
+                        Id =  Guid.NewGuid().ToString(),
+                        MemberId = updateMember.MemberId,
+                        TrainerId = updateMember.TrainerId,
                     });
                     await _context.SaveChangesAsync();
                 }
@@ -239,6 +259,7 @@ namespace FitnessApp.Controllers
                 return RedirectToAction(nameof(Index));
             }
             ViewData["GymBundleId"] = new SelectList(_context.GymBundles, "Id", "BundleTitle", updateMember.GymBundleId);
+            ViewData["TrainerId"] = new SelectList(_context.GymBundles, "Id", "Email", updateMember.TrainerId);
             return View(updateMember);
         }
 
@@ -248,6 +269,15 @@ namespace FitnessApp.Controllers
             if (id == null)
             {
                 return NotFound();
+            }
+           List<Invoice> inv =  _context.Invoices.Where(q => q.MemberId == id).ToList();
+            if(inv != null)
+            {
+                foreach (var item in inv)
+                {
+                    _context.Invoices.Remove(item);
+                }
+                _context.SaveChanges();
             }
 
             var member = await _context.Members

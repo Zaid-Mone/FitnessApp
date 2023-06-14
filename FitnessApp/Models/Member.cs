@@ -38,6 +38,12 @@ namespace FitnessApp.Models
         public DateTime MembershipFrom { get; set; } // DateTime.Now
         public DateTime MembershipTo { get; set; } // MembershipFrom.AddDays(=> get this form the gym bundle)
 
+
+        [ForeignKey("TrainerId")]
+        [Display(Name = "Trainer")]
+        public string TrainerId { get; set; }
+        public Trainer Trainer { get; set; }
+
         //public string Country { get; set; } = "Jordan";   
         //public State State { get; set; }
         //public string Address { get; set; } = string.Empty;
