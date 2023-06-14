@@ -51,13 +51,13 @@
             @Html.DisplayNameFor(model => model.GymBundle)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.GymBundle.Id)
+            @Html.DisplayFor(model => model.GymBundle.BundleTitle)
         </dd class>
         <dt class = "col-sm-2">
             @Html.DisplayNameFor(model => model.Trainer)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Trainer.Id)
+            @Html.DisplayFor(model => model.Trainer.Person.Email)
         </dd class>
     </dl>
     
