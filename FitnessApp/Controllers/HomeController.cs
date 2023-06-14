@@ -1,4 +1,5 @@
 ﻿using FitnessApp.Data;
+using FitnessApp.DTOs;
 using FitnessApp.Models;
 using FitnessApp.Utility;
 using Microsoft.AspNetCore.Identity;
@@ -145,6 +146,94 @@ namespace FitnessApp.Controllers
             };
             _context.Admins.Add(admin);
             _context.SaveChanges();
+
+            // Add Trainer
+            var person1 = new Person()
+            {
+                Email = "Trainer@email.com",
+                Gender = Enums.Gender.Male,
+                RegisterDate = DateTime.Now,
+                UserName = "Trainer@email.com",
+                Role = Roles.Trainer,
+                PhoneNumber = "078781423",
+                EmailConfirmed = true,
+                PhoneNumberConfirmed = true,
+            };
+            var username1 = person1.Email.Substring(0, person1.Email.IndexOf("@"));
+            person1.UserAvatar = $"https://ui-avatars.com/api/?name={username}";
+            _userManager.CreateAsync(person1, "Admin1234*").GetAwaiter().GetResult();
+            _userManager.AddToRoleAsync(person1, Roles.Trainer).GetAwaiter().GetResult();
+
+            var trainer = new Trainer()
+            {
+                Id = Guid.NewGuid().ToString(),
+                PersonId = person1.Id
+            };
+            _context.Trainers.Add(trainer);
+            _context.SaveChanges();
+
+            // Add Trainer
+            var person2 = new Person()
+            {
+                Email = "Member@email.com",
+                Gender = Enums.Gender.Male,
+                RegisterDate = DateTime.Now,
+                UserName = "Member@email.com",
+                Role = Roles.Member,
+                PhoneNumber = "078781423",
+                EmailConfirmed = true,
+                PhoneNumberConfirmed = true,
+            };
+            var username2 = person2.Email.Substring(0, person2.Email.IndexOf("@"));
+            person2.UserAvatar = $"https://ui-avatars.com/api/?name={username}";
+            _userManager.CreateAsync(person2, "Admin1234*").GetAwaiter().GetResult();
+            _userManager.AddToRoleAsync(person2, Roles.Member).GetAwaiter().GetResult();
+
+            var member = new Member()
+            {
+                Id = Guid.NewGuid().ToString(),
+                PersonId = person1.Id,
+                Age=23,
+                DateOfBirth= DateTime.Now,
+                GymBundleId= "66efd204-d497-4c80-baf5-8a0500e167df",
+                Height=180,
+                MembershipFrom=DateTime.Now,
+                MembershipTo=DateTime.Now.AddDays(30),
+                Weight=100,
+                
+            };
+            _context.Members.Add(member);
+            _context.SaveChanges();
+
+            var memeberDTO = new WeightCalculateDTO
+            {
+                Weight = member.Weight,
+                Height = member.Height,
+                Age = member.Age
+            };
+            member.BMIStatus = WeightState.SetWeightStatus(member.Height, member.Weight);
+            member.IsMemberOverWeight = CalculateWeight.IsOverweight(memeberDTO);
+            member.ExpectedWeight = CalculateWeight.GetPerfectWeight(memeberDTO);
+            // find Gym bundle with number of days.
+            var gym = _context.GymBundles.Where(q => q.Id == member.GymBundleId).FirstOrDefault();
+            var date = DateTime.Now;
+            member.MembershipFrom = date;
+            member.MembershipTo = member.MembershipFrom.AddDays((double)gym.NumberOfDays);
+            _context.Members.Add(member);
+             _context.SaveChanges();
+
+            var trainersss = _context.Trainers.Where(q => q.Id == trainer.Id).FirstOrDefault();
+
+            // add Trainers Members
+            var trainermember = new TrainersMember()
+            {
+                Id = Guid.NewGuid().ToString(),
+                MemberId = member.Id,
+                TrainerId = trainer.Id,
+            };
+            _context.TrainersMembers.Add(trainermember);
+             _context.SaveChanges();
+
         }
         public void AddRoles()
         {
